@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="time_text">
+        <item name="android:textAlignment">center</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">72sp</item>
+        <item name="android:fontFamily">@font/oswald_regular</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+</resources>

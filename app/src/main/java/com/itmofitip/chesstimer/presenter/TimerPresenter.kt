@@ -1,89 +1,138 @@
 package com.itmofitip.chesstimer.presenter
 
 import android.util.Log
-import com.itmofitip.chesstimer.repository.TimerRepository
+import com.itmofitip.chesstimer.repository.*
 import com.itmofitip.chesstimer.view.TimerView
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.concurrent.TimeUnit
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class TimerPresenter(private val view: TimerView) {
 
-    private val turn = MutableStateFlow<Int?>(null)
-    private val isPause = MutableStateFlow(true)
-    private var activeJob: Job? = null
-    private var repository = TimerRepository()
+    private val turnRepository = TurnRepository()
+    private val pauseRepository = PauseRepository()
+    private var timeRepository = TimeRepository()
+    private var firstJob: Job? = null
+    private var secondJob: Job? = null
 
     init {
-        view.setFirstTime(repository.getStartTime())
-        view.setSecondTime(repository.getStartTime())
+        view.setFirstTime(getNormalizedTime(timeRepository.startMillis))
+        view.setSecondTime(getNormalizedTime(timeRepository.startMillis))
 
         CoroutineScope(Dispatchers.IO).launch {
-            isPause.collect {
-                if (it) {
-                    activeJob?.cancel()
+            pauseRepository.pauseState.collect {
+                when (it) {
+                    PauseState.PAUSE -> {
+                        firstJob?.cancel()
+                        secondJob?.cancel()
+                    }
+                    PauseState.ACTIVE -> {
+                        collectTime()
+                    }
                 }
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            observeTurn()
-        }
+        observeMillisLeft()
     }
 
     fun startTimer() {
-        isPause.value = false
-        CoroutineScope(Dispatchers.IO).launch {
-            observeTurn()
-        }
+        pauseRepository.setPauseState(PauseState.ACTIVE)
     }
 
     fun stopTimer() {
-        isPause.value = true
+        pauseRepository.setPauseState(PauseState.PAUSE)
     }
 
     fun onFirstTimeButtonClicked() {
-        Log.d("LOL", "onFirstTimeButtonClicked")
-        turn.value = 1
+        startTimer()
+        timeRepository.incrementFirstTime()
+        turnRepository.setTurn(Turn.SECOND)
     }
 
     fun onSecondTimeButtonClicked() {
-        Log.d("LOL", "onSecondTimeButtonClicked")
-        turn.value = 0
+        startTimer()
+        timeRepository.incrementSecondTime()
+        turnRepository.setTurn(Turn.FIRST)
     }
 
-    private suspend fun observeTurn() {
-        Log.d("LOL", "observeTurn")
-        turn.collect {
-            Log.d("LOL", "im in collect turn with value $it")
-            activeJob?.cancel()
-
-            when (it) {
-                0 -> {
-                    activeJob = getTimerJob(0)
+    @FlowPreview
+    private fun observeMillisLeft() {
+        CoroutineScope(Dispatchers.IO).launch {
+            timeRepository.firstMillisLeft.collect {
+                withContext(Dispatchers.Main) {
+                    view.setFirstProgress(it.toFloat() / timeRepository.startMillis * 100)
                 }
-                1 -> {
-                    activeJob = getTimerJob(1)
+            }
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            timeRepository.secondMillisLeft.collect {
+                withContext(Dispatchers.Main) {
+                    view.setSecondProgress(it.toFloat() / timeRepository.startMillis * 100)
                 }
             }
         }
     }
 
-    private fun getTimerJob(a: Int): Job {
-        return when (a) {
-            0 -> CoroutineScope(Dispatchers.IO).launch {
-                repository.getFirstTimeFlow().collect { time ->
-                    withContext(Dispatchers.Main) {
-                        view.setFirstTime(time)
-                    }
-                }
+    @ExperimentalCoroutinesApi
+    private fun collectTime() {
+        firstJob = CoroutineScope(Dispatchers.Main).launch {
+            getFirstTimeFlow().collect { time ->
+                view.setFirstTime(time)
             }
-            else -> CoroutineScope(Dispatchers.IO).launch {
-                repository.getSecondTimeFlow().collect { time ->
-                    withContext(Dispatchers.Main) {
-                        view.setSecondTime(time)
+        }
+        secondJob = CoroutineScope(Dispatchers.Main).launch {
+            getSecondTimeFlow().collect { time ->
+                view.setSecondTime(time)
+            }
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    private fun getFirstTimeFlow(): Flow<String> {
+        return turnRepository.turn.flatMapLatest { turn ->
+            when (turn) {
+                Turn.FIRST -> return@flatMapLatest flow {
+                    while (true) {
+                        delay(10)
+                        timeRepository.decrementFirstTime(10)
+                        emit(getNormalizedTime(timeRepository.firstMillisLeft.value))
                     }
+                }.flowOn(Dispatchers.IO)
+
+                else -> return@flatMapLatest flow {
+                    emit(getNormalizedTime(timeRepository.firstMillisLeft.value))
                 }
             }
         }
+    }
+
+    @ExperimentalCoroutinesApi
+    private fun getSecondTimeFlow(): Flow<String> {
+        return turnRepository.turn.flatMapLatest { turn ->
+            when (turn) {
+                Turn.SECOND -> return@flatMapLatest flow {
+                    while (true) {
+                        delay(10)
+                        timeRepository.decrementSecondTime(10)
+                        emit(getNormalizedTime(timeRepository.secondMillisLeft.value))
+                    }
+                }.flowOn(Dispatchers.IO)
+
+                else -> return@flatMapLatest flow {
+                    emit(getNormalizedTime(timeRepository.secondMillisLeft.value))
+                }
+            }
+        }
+    }
+
+    private fun getNormalizedTime(millis: Long): String {
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
+        val seconds = TimeUnit.MILLISECONDS.toSeconds(millis - minutes * 60_000)
+        val strMinutes = if (minutes < 10) "0$minutes" else "$minutes"
+        val strSeconds = if (seconds < 10) "0$seconds" else "$seconds"
+        return "$strMinutes:$strSeconds"
     }
 }

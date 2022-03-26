@@ -5,7 +5,9 @@ import android.os.Bundle
 import com.itmofitip.chesstimer.view.fragment.TimerFragment
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
 import com.itmofitip.chesstimer.utilities.replaceFragment
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        supportActionBar?.hide()
         replaceFragment(TimerFragment(), false)
     }
 }

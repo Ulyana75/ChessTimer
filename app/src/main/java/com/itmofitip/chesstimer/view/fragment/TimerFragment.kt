@@ -1,17 +1,23 @@
 package com.itmofitip.chesstimer.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.presenter.TimerPresenter
+import com.itmofitip.chesstimer.view.CircularProgressBar
 import com.itmofitip.chesstimer.view.TimerView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
-
+@FlowPreview
+@ExperimentalCoroutinesApi
 class TimerFragment : Fragment(), TimerView {
 
     private lateinit var presenter: TimerPresenter
@@ -43,5 +49,13 @@ class TimerFragment : Fragment(), TimerView {
 
     override fun setSecondTime(time: String) {
         requireActivity().findViewById<TextView>(R.id.time_second).text = time
+    }
+
+    override fun setFirstProgress(progress: Float) {
+        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_first).setProgress(progress)
+    }
+
+    override fun setSecondProgress(progress: Float) {
+        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_second).setProgress(progress)
     }
 }
