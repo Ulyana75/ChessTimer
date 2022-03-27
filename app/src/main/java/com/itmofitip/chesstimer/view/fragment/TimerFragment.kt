@@ -10,12 +10,17 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginStart
 import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.presenter.TimerPresenter
 import com.itmofitip.chesstimer.view.CircularProgressBar
 import com.itmofitip.chesstimer.view.TimerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import android.widget.LinearLayout
+import androidx.core.view.marginTop
+import kotlin.math.roundToInt
+
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -33,20 +38,29 @@ class TimerFragment : Fragment(), TimerView {
 
     override fun onStart() {
         super.onStart()
+        Log.d("LOL", "startMargin ${requireActivity().findViewById<TextView>(R.id.time_first).marginStart}")
 
         presenter = TimerPresenter(this)
+        initButtons()
+    }
 
-        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first).setOnClickListener {
-            presenter.onFirstTimeButtonClicked()
-        }
-        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second).setOnClickListener {
-            presenter.onSecondTimeButtonClicked()
-        }
+    private fun initButtons() {
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first)
+            .setOnClickListener {
+                presenter.onFirstTimeButtonClicked()
+            }
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second)
+            .setOnClickListener {
+                presenter.onSecondTimeButtonClicked()
+            }
         requireActivity().findViewById<ImageView>(R.id.pause_button).setOnClickListener {
             presenter.stopTimer()
         }
         requireActivity().findViewById<ImageView>(R.id.continue_button).setOnClickListener {
             presenter.startTimer()
+        }
+        requireActivity().findViewById<ImageView>(R.id.restart_button).setOnClickListener {
+            presenter.restartTimer()
         }
     }
 
@@ -59,11 +73,23 @@ class TimerFragment : Fragment(), TimerView {
     }
 
     override fun setFirstProgress(progress: Float) {
-        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_first).setProgress(progress)
+        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_first)
+            .setProgress(progress)
     }
 
     override fun setSecondProgress(progress: Float) {
-        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_second).setProgress(progress)
+        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_second)
+            .setProgress(progress)
+    }
+
+    override fun setFirstInactive() {
+        requireActivity().findViewById<View>(R.id.inactive_first).visibility = View.VISIBLE
+        requireActivity().findViewById<View>(R.id.inactive_second).visibility = View.GONE
+    }
+
+    override fun setSecondInactive() {
+        requireActivity().findViewById<View>(R.id.inactive_first).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.inactive_second).visibility = View.VISIBLE
     }
 
     override fun onNotStartedState() {
@@ -72,6 +98,9 @@ class TimerFragment : Fragment(), TimerView {
         requireActivity().findViewById<ImageView>(R.id.restart_button).visibility = View.VISIBLE
         requireActivity().findViewById<ImageView>(R.id.continue_button).visibility = View.INVISIBLE
         requireActivity().findViewById<ImageView>(R.id.pause_button).visibility = View.INVISIBLE
+
+        requireActivity().findViewById<View>(R.id.inactive_first).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.inactive_second).visibility = View.GONE
     }
 
     override fun onPauseState() {
@@ -80,6 +109,9 @@ class TimerFragment : Fragment(), TimerView {
         requireActivity().findViewById<ImageView>(R.id.restart_button).visibility = View.VISIBLE
         requireActivity().findViewById<ImageView>(R.id.continue_button).visibility = View.VISIBLE
         requireActivity().findViewById<ImageView>(R.id.pause_button).visibility = View.INVISIBLE
+
+        requireActivity().findViewById<View>(R.id.inactive_first).visibility = View.GONE
+        requireActivity().findViewById<View>(R.id.inactive_second).visibility = View.GONE
     }
 
     override fun onActiveState() {

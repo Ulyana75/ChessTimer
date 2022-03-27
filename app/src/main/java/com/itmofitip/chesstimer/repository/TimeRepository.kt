@@ -32,4 +32,9 @@ class TimeRepository {
     fun decrementSecondTime(decrement: Long) {
         _secondMillisLeft.value -= decrement
     }
+
+    fun resetTime() {
+        _firstMillisLeft.value = startMillis
+        _secondMillisLeft.value = startMillis
+    }
 }

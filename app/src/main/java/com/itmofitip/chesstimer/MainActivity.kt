@@ -6,7 +6,9 @@ import com.itmofitip.chesstimer.view.fragment.TimerFragment
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
 import com.itmofitip.chesstimer.utilities.replaceFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 

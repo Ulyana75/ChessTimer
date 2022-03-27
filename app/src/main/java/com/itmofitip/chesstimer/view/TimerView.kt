@@ -7,6 +7,9 @@ interface TimerView {
     fun setFirstProgress(progress: Float)
     fun setSecondProgress(progress: Float)
 
+    fun setFirstInactive()
+    fun setSecondInactive()
+
     fun onNotStartedState()
     fun onPauseState()
     fun onActiveState()

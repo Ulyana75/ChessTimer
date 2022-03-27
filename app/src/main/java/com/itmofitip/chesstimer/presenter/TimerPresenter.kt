@@ -15,37 +15,17 @@ class TimerPresenter(private val view: TimerView) {
     private var timeRepository = TimeRepository()
     private var firstJob: Job? = null
     private var secondJob: Job? = null
+    private var turnForInactiveJob: Job? = null
 
     init {
+        setStartTime()
+        observePauseState()
+        observeMillisLeft()
+    }
+
+    private fun setStartTime() {
         view.setFirstTime(getNormalizedTime(timeRepository.startMillis))
         view.setSecondTime(getNormalizedTime(timeRepository.startMillis))
-
-        CoroutineScope(Dispatchers.IO).launch {
-            pauseRepository.pauseState.collect {
-                when (it) {
-                    PauseState.PAUSE -> {
-                        withContext(Dispatchers.Main) {
-                            view.onPauseState()
-                        }
-                        firstJob?.cancel()
-                        secondJob?.cancel()
-                    }
-                    PauseState.ACTIVE -> {
-                        withContext(Dispatchers.Main) {
-                            view.onActiveState()
-                        }
-                        collectTime()
-                    }
-                    PauseState.NOT_STARTED -> {
-                        withContext(Dispatchers.Main) {
-                            view.onNotStartedState()
-                        }
-                    }
-                }
-            }
-        }
-
-        observeMillisLeft()
     }
 
     fun startTimer() {
@@ -56,8 +36,12 @@ class TimerPresenter(private val view: TimerView) {
         pauseRepository.setPauseState(PauseState.PAUSE)
     }
 
+    fun restartTimer() {
+        pauseRepository.setPauseState(PauseState.NOT_STARTED)
+    }
+
     fun onFirstTimeButtonClicked() {
-        if (pauseRepository.pauseState.value != PauseState.NOT_STARTED) {
+        if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.FIRST) {
             timeRepository.incrementFirstTime()
         }
         startTimer()
@@ -65,33 +49,76 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     fun onSecondTimeButtonClicked() {
-        if (pauseRepository.pauseState.value != PauseState.NOT_STARTED) {
+        if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.SECOND) {
             timeRepository.incrementSecondTime()
         }
         startTimer()
         turnRepository.setTurn(Turn.FIRST)
     }
 
+    private fun cancelAllJobs() {
+        firstJob?.cancel()
+        secondJob?.cancel()
+        turnForInactiveJob?.cancel()
+    }
+
     @FlowPreview
     private fun observeMillisLeft() {
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             timeRepository.firstMillisLeft.collect {
-                withContext(Dispatchers.Main) {
-                    view.setFirstProgress(it.toFloat() / timeRepository.startMillis * 100)
+                view.setFirstProgress(it.toFloat() / timeRepository.startMillis * 100)
+            }
+        }
+        CoroutineScope(Dispatchers.Main).launch {
+            timeRepository.secondMillisLeft.collect {
+                view.setSecondProgress(it.toFloat() / timeRepository.startMillis * 100)
+            }
+        }
+    }
+
+    private fun observeTurnForInactive() {
+        turnForInactiveJob = CoroutineScope(Dispatchers.Main).launch {
+            turnRepository.turn.collect {
+                when (it) {
+                    Turn.FIRST -> view.setSecondInactive()
+                    else -> view.setFirstInactive()
                 }
             }
         }
+    }
+
+    private fun observePauseState() {
         CoroutineScope(Dispatchers.IO).launch {
-            timeRepository.secondMillisLeft.collect {
-                withContext(Dispatchers.Main) {
-                    view.setSecondProgress(it.toFloat() / timeRepository.startMillis * 100)
+            pauseRepository.pauseState.collect {
+                when (it) {
+                    PauseState.PAUSE -> {
+                        withContext(Dispatchers.Main) {
+                            view.onPauseState()
+                        }
+                        cancelAllJobs()
+                    }
+                    PauseState.ACTIVE -> {
+                        withContext(Dispatchers.Main) {
+                            view.onActiveState()
+                        }
+                        observeTurnForInactive()
+                        observeTime()
+                    }
+                    PauseState.NOT_STARTED -> {
+                        timeRepository.resetTime()
+                        cancelAllJobs()
+                        withContext(Dispatchers.Main) {
+                            view.onNotStartedState()
+                            setStartTime()
+                        }
+                    }
                 }
             }
         }
     }
 
     @ExperimentalCoroutinesApi
-    private fun collectTime() {
+    private fun observeTime() {
         firstJob = CoroutineScope(Dispatchers.Main).launch {
             getFirstTimeFlow().collect { time ->
                 view.setFirstTime(time)
