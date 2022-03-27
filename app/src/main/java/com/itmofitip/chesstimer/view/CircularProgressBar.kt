@@ -90,4 +90,10 @@ class CircularProgressBar(context: Context, attrs: AttributeSet) : View(context,
         progress = newProgress
         invalidate()
     }
+
+    fun setColor(newColor: Int) {
+        color = newColor
+        foregroundPaint.color = color
+        invalidate()
+    }
 }

@@ -13,4 +13,11 @@ interface TimerView {
     fun onNotStartedState()
     fun onPauseState()
     fun onActiveState()
+
+    fun onFirstFewTime()
+    fun onSecondFewTime()
+    fun onFirstFinished()
+    fun onSecondFinished()
+    fun onFirstNormal()
+    fun onSecondNormal()
 }

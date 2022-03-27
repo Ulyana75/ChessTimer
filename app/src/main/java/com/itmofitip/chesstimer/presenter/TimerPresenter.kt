@@ -1,18 +1,22 @@
 package com.itmofitip.chesstimer.presenter
 
 import com.itmofitip.chesstimer.repository.*
+import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
 import com.itmofitip.chesstimer.view.TimerView
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.TimeUnit
 
+val FEW_TIME_MILLIS = TimeUnit.MINUTES.toMillis(1)
+
 @FlowPreview
 @ExperimentalCoroutinesApi
 class TimerPresenter(private val view: TimerView) {
 
-    private val turnRepository = TurnRepository()
-    private val pauseRepository = PauseRepository()
-    private var timeRepository = TimeRepository()
+    private val turnRepository = APP_ACTIVITY.turnRepository
+    private val pauseRepository = APP_ACTIVITY.pauseRepository
+    private val timeRepository = APP_ACTIVITY.timeRepository
+    private val timeQuantityRepository = APP_ACTIVITY.timeQuantityRepository
     private var firstJob: Job? = null
     private var secondJob: Job? = null
     private var turnForInactiveJob: Job? = null
@@ -20,6 +24,7 @@ class TimerPresenter(private val view: TimerView) {
     init {
         setStartTime()
         observePauseState()
+        observeTimeQuantityState()
         observeMillisLeft()
     }
 
@@ -29,7 +34,9 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     fun startTimer() {
-        pauseRepository.setPauseState(PauseState.ACTIVE)
+        if (gameNotFinished()) {
+            pauseRepository.setPauseState(PauseState.ACTIVE)
+        }
     }
 
     fun stopTimer() {
@@ -41,19 +48,28 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     fun onFirstTimeButtonClicked() {
-        if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.FIRST) {
-            timeRepository.incrementFirstTime()
+        if (gameNotFinished()) {
+            if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.FIRST) {
+                timeRepository.incrementFirstTime()
+            }
+            startTimer()
+            turnRepository.setTurn(Turn.SECOND)
         }
-        startTimer()
-        turnRepository.setTurn(Turn.SECOND)
     }
 
     fun onSecondTimeButtonClicked() {
-        if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.SECOND) {
-            timeRepository.incrementSecondTime()
+        if (gameNotFinished()) {
+            if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.SECOND) {
+                timeRepository.incrementSecondTime()
+            }
+            startTimer()
+            turnRepository.setTurn(Turn.FIRST)
         }
-        startTimer()
-        turnRepository.setTurn(Turn.FIRST)
+    }
+
+    private fun gameNotFinished(): Boolean {
+        return (timeQuantityRepository.firstTimeQuantityState.value != TimeQuantityState.FINISHED
+                && timeQuantityRepository.secondTimeQuantityState.value != TimeQuantityState.FINISHED)
     }
 
     private fun cancelAllJobs() {
@@ -67,11 +83,52 @@ class TimerPresenter(private val view: TimerView) {
         CoroutineScope(Dispatchers.Main).launch {
             timeRepository.firstMillisLeft.collect {
                 view.setFirstProgress(it.toFloat() / timeRepository.startMillis * 100)
+                when {
+                    it <= 0 -> timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.FINISHED)
+                    it < FEW_TIME_MILLIS -> timeQuantityRepository.setFirstTimeQuantityState(
+                        TimeQuantityState.FEW
+                    )
+                    else -> timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.NORMAL)
+                }
             }
         }
         CoroutineScope(Dispatchers.Main).launch {
             timeRepository.secondMillisLeft.collect {
                 view.setSecondProgress(it.toFloat() / timeRepository.startMillis * 100)
+                when {
+                    it <= 0 -> timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.FINISHED)
+                    it < FEW_TIME_MILLIS -> timeQuantityRepository.setSecondTimeQuantityState(
+                        TimeQuantityState.FEW
+                    )
+                    else -> timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.NORMAL)
+                }
+            }
+        }
+    }
+
+    private fun observeTimeQuantityState() {
+        CoroutineScope(Dispatchers.Main).launch {
+            timeQuantityRepository.firstTimeQuantityState.collect {
+                when (it) {
+                    TimeQuantityState.FEW -> view.onFirstFewTime()
+                    TimeQuantityState.FINISHED -> {
+                        view.onFirstFinished()
+                        stopTimer()
+                    }
+                    TimeQuantityState.NORMAL -> view.onFirstNormal()
+                }
+            }
+        }
+        CoroutineScope(Dispatchers.Main).launch {
+            timeQuantityRepository.secondTimeQuantityState.collect {
+                when (it) {
+                    TimeQuantityState.FEW -> view.onSecondFewTime()
+                    TimeQuantityState.FINISHED -> {
+                        view.onSecondFinished()
+                        stopTimer()
+                    }
+                    TimeQuantityState.NORMAL -> view.onSecondNormal()
+                }
             }
         }
     }

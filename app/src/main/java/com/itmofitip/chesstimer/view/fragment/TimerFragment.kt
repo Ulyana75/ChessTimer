@@ -38,7 +38,6 @@ class TimerFragment : Fragment(), TimerView {
 
     override fun onStart() {
         super.onStart()
-        Log.d("LOL", "startMargin ${requireActivity().findViewById<TextView>(R.id.time_first).marginStart}")
 
         presenter = TimerPresenter(this)
         initButtons()
@@ -120,5 +119,53 @@ class TimerFragment : Fragment(), TimerView {
         requireActivity().findViewById<ImageView>(R.id.restart_button).visibility = View.INVISIBLE
         requireActivity().findViewById<ImageView>(R.id.continue_button).visibility = View.INVISIBLE
         requireActivity().findViewById<ImageView>(R.id.pause_button).visibility = View.VISIBLE
+    }
+
+    override fun onFirstFewTime() {
+        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_first).setColor(
+            requireActivity().resources.getColor(R.color.few_time)
+        )
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first).setBackgroundColor(
+            requireActivity().resources.getColor(R.color.white)
+        )
+    }
+
+    override fun onSecondFewTime() {
+        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_second).setColor(
+            requireActivity().resources.getColor(R.color.few_time)
+        )
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second).setBackgroundColor(
+            requireActivity().resources.getColor(R.color.white)
+        )
+    }
+
+    override fun onFirstFinished() {
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first).setBackgroundColor(
+            requireActivity().resources.getColor(R.color.few_time)
+        )
+    }
+
+    override fun onSecondFinished() {
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second).setBackgroundColor(
+            requireActivity().resources.getColor(R.color.few_time)
+        )
+    }
+
+    override fun onFirstNormal() {
+        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_first).setColor(
+            requireActivity().resources.getColor(R.color.main_blue)
+        )
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first).setBackgroundColor(
+            requireActivity().resources.getColor(R.color.white)
+        )
+    }
+
+    override fun onSecondNormal() {
+        requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_second).setColor(
+            requireActivity().resources.getColor(R.color.main_blue)
+        )
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second).setBackgroundColor(
+            requireActivity().resources.getColor(R.color.white)
+        )
     }
 }
