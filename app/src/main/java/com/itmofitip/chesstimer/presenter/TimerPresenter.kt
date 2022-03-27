@@ -1,6 +1,5 @@
 package com.itmofitip.chesstimer.presenter
 
-import android.util.Log
 import com.itmofitip.chesstimer.repository.*
 import com.itmofitip.chesstimer.view.TimerView
 import kotlinx.coroutines.*
@@ -25,11 +24,22 @@ class TimerPresenter(private val view: TimerView) {
             pauseRepository.pauseState.collect {
                 when (it) {
                     PauseState.PAUSE -> {
+                        withContext(Dispatchers.Main) {
+                            view.onPauseState()
+                        }
                         firstJob?.cancel()
                         secondJob?.cancel()
                     }
                     PauseState.ACTIVE -> {
+                        withContext(Dispatchers.Main) {
+                            view.onActiveState()
+                        }
                         collectTime()
+                    }
+                    PauseState.NOT_STARTED -> {
+                        withContext(Dispatchers.Main) {
+                            view.onNotStartedState()
+                        }
                     }
                 }
             }
@@ -47,14 +57,18 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     fun onFirstTimeButtonClicked() {
+        if (pauseRepository.pauseState.value != PauseState.NOT_STARTED) {
+            timeRepository.incrementFirstTime()
+        }
         startTimer()
-        timeRepository.incrementFirstTime()
         turnRepository.setTurn(Turn.SECOND)
     }
 
     fun onSecondTimeButtonClicked() {
+        if (pauseRepository.pauseState.value != PauseState.NOT_STARTED) {
+            timeRepository.incrementSecondTime()
+        }
         startTimer()
-        timeRepository.incrementSecondTime()
         turnRepository.setTurn(Turn.FIRST)
     }
 

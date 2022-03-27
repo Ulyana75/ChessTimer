@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +42,12 @@ class TimerFragment : Fragment(), TimerView {
         requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second).setOnClickListener {
             presenter.onSecondTimeButtonClicked()
         }
+        requireActivity().findViewById<ImageView>(R.id.pause_button).setOnClickListener {
+            presenter.stopTimer()
+        }
+        requireActivity().findViewById<ImageView>(R.id.continue_button).setOnClickListener {
+            presenter.startTimer()
+        }
     }
 
     override fun setFirstTime(time: String) {
@@ -57,5 +64,29 @@ class TimerFragment : Fragment(), TimerView {
 
     override fun setSecondProgress(progress: Float) {
         requireActivity().findViewById<CircularProgressBar>(R.id.progress_bar_second).setProgress(progress)
+    }
+
+    override fun onNotStartedState() {
+        requireActivity().findViewById<ImageView>(R.id.tap_to_start).visibility = View.VISIBLE
+        requireActivity().findViewById<ImageView>(R.id.settings_button).visibility = View.VISIBLE
+        requireActivity().findViewById<ImageView>(R.id.restart_button).visibility = View.VISIBLE
+        requireActivity().findViewById<ImageView>(R.id.continue_button).visibility = View.INVISIBLE
+        requireActivity().findViewById<ImageView>(R.id.pause_button).visibility = View.INVISIBLE
+    }
+
+    override fun onPauseState() {
+        requireActivity().findViewById<ImageView>(R.id.tap_to_start).visibility = View.INVISIBLE
+        requireActivity().findViewById<ImageView>(R.id.settings_button).visibility = View.VISIBLE
+        requireActivity().findViewById<ImageView>(R.id.restart_button).visibility = View.VISIBLE
+        requireActivity().findViewById<ImageView>(R.id.continue_button).visibility = View.VISIBLE
+        requireActivity().findViewById<ImageView>(R.id.pause_button).visibility = View.INVISIBLE
+    }
+
+    override fun onActiveState() {
+        requireActivity().findViewById<ImageView>(R.id.tap_to_start).visibility = View.INVISIBLE
+        requireActivity().findViewById<ImageView>(R.id.settings_button).visibility = View.INVISIBLE
+        requireActivity().findViewById<ImageView>(R.id.restart_button).visibility = View.INVISIBLE
+        requireActivity().findViewById<ImageView>(R.id.continue_button).visibility = View.INVISIBLE
+        requireActivity().findViewById<ImageView>(R.id.pause_button).visibility = View.VISIBLE
     }
 }
