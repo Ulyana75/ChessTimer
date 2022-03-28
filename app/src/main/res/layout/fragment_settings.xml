@@ -14,7 +14,10 @@
         app:layout_constraintStart_toStartOf="parent"
         android:src="@drawable/return_button"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:tintMode="src_in"
+        app:tint="@android:color/transparent"
+        android:background="@drawable/return_button_with_ripple"/>
 
     <TextView
         android:id="@+id/time_header"
@@ -42,7 +45,7 @@
         style="@style/base_text"
         android:text="@string/settings_add_time"
         android:textSize="24sp"
-        android:background="@drawable/time_element_border"
+        android:background="@drawable/border_for_time_element"
         android:textAlignment="center"
         android:layout_marginTop="16dp"/>
 

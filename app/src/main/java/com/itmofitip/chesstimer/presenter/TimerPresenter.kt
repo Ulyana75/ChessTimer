@@ -46,7 +46,9 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     fun detach() {
-        stopTimer()
+        if (pauseRepository.pauseState.value == PauseState.ACTIVE) {
+            stopTimer()
+        }
         activeJobs.forEach {
             it.cancel()
         }
