@@ -1,5 +1,7 @@
 package com.itmofitip.chesstimer.view.fragment
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +24,7 @@ import com.itmofitip.chesstimer.utilities.replaceFragment
 class TimerFragment : Fragment(), TimerView {
 
     private val presenter = TimerPresenter(this)
+    private val animationDuration = 200L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -97,11 +100,11 @@ class TimerFragment : Fragment(), TimerView {
 
     override fun onNotStartedState() {
         with(requireActivity()) {
-            findViewById<ImageView>(R.id.tap_to_start).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.settings_button).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.restart_button).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.continue_button).visibility = View.INVISIBLE
-            findViewById<ImageView>(R.id.pause_button).visibility = View.INVISIBLE
+            findViewById<ImageView>(R.id.tap_to_start).animateVisibilityToVisible()
+            findViewById<ImageView>(R.id.settings_button).animateVisibilityToVisible()
+            findViewById<ImageView>(R.id.restart_button).animateVisibilityToVisible()
+            findViewById<ImageView>(R.id.continue_button).animateVisibilityToGone()
+            findViewById<ImageView>(R.id.pause_button).animateVisibilityToGone()
 
             findViewById<View>(R.id.inactive_first).visibility = View.GONE
             findViewById<View>(R.id.inactive_second).visibility = View.GONE
@@ -110,11 +113,11 @@ class TimerFragment : Fragment(), TimerView {
 
     override fun onPauseState() {
         with(requireActivity()) {
-            findViewById<ImageView>(R.id.tap_to_start).visibility = View.INVISIBLE
-            findViewById<ImageView>(R.id.settings_button).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.restart_button).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.continue_button).visibility = View.VISIBLE
-            findViewById<ImageView>(R.id.pause_button).visibility = View.INVISIBLE
+            findViewById<ImageView>(R.id.tap_to_start).animateVisibilityToInvisible()
+            findViewById<ImageView>(R.id.settings_button).animateVisibilityToVisible()
+            findViewById<ImageView>(R.id.restart_button).animateVisibilityToVisible()
+            findViewById<ImageView>(R.id.continue_button).animateVisibilityToVisible()
+            findViewById<ImageView>(R.id.pause_button).animateVisibilityToGone()
 
             findViewById<View>(R.id.inactive_first).visibility = View.GONE
             findViewById<View>(R.id.inactive_second).visibility = View.GONE
@@ -122,12 +125,12 @@ class TimerFragment : Fragment(), TimerView {
     }
 
     override fun onActiveState() {
-        with (requireActivity()) {
-            findViewById<ImageView>(R.id.tap_to_start).visibility = View.INVISIBLE
-            findViewById<ImageView>(R.id.settings_button).visibility = View.INVISIBLE
-            findViewById<ImageView>(R.id.restart_button).visibility = View.INVISIBLE
-            findViewById<ImageView>(R.id.continue_button).visibility = View.INVISIBLE
-            findViewById<ImageView>(R.id.pause_button).visibility = View.VISIBLE
+        with(requireActivity()) {
+            findViewById<ImageView>(R.id.tap_to_start).animateVisibilityToInvisible()
+            findViewById<ImageView>(R.id.settings_button).animateVisibilityToInvisible()
+            findViewById<ImageView>(R.id.restart_button).animateVisibilityToInvisible()
+            findViewById<ImageView>(R.id.continue_button).animateVisibilityToGone()
+            findViewById<ImageView>(R.id.pause_button).animateVisibilityToVisible()
         }
     }
 
@@ -183,5 +186,25 @@ class TimerFragment : Fragment(), TimerView {
             .setBackgroundColor(
                 requireActivity().resources.getColor(R.color.white)
             )
+    }
+
+    private fun View.animateVisibilityToVisible() {
+        alpha = 0f
+        visibility = View.VISIBLE
+        animate().alpha(1f).setDuration(animationDuration).setListener(null)
+    }
+
+    private fun View.animateVisibilityToInvisible() {
+        animate().alpha(0f).setDuration(animationDuration).setListener(null)
+    }
+
+    private fun View.animateVisibilityToGone() {
+        animate().alpha(0f).setDuration(animationDuration).setListener(
+            object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    visibility = View.GONE
+                }
+            }
+        )
     }
 }

@@ -1,6 +1,5 @@
 package com.itmofitip.chesstimer.presenter
 
-import android.util.Log
 import com.itmofitip.chesstimer.repository.PauseState
 import com.itmofitip.chesstimer.repository.TimeQuantityState
 import com.itmofitip.chesstimer.repository.Turn
@@ -54,6 +53,7 @@ class TimerPresenter(private val view: TimerView) {
         }
         activeJobs.clear()
         cancelAllJobs()
+        timeRepository.setLastChosenTime()
     }
 
     private fun setTime() {

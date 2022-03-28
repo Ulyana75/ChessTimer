@@ -42,7 +42,7 @@ class SettingsFragment : Fragment(), SettingsView {
         APP_ACTIVITY.supportFragmentManager.popBackStack()
     }
 
-    fun initButtons() {
+    private fun initButtons() {
         with (requireActivity()) {
             findViewById<ImageView>(R.id.return_button).setOnClickListener {
                 APP_ACTIVITY.supportFragmentManager.popBackStack()
