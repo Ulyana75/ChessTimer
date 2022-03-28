@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import java.util.concurrent.TimeUnit
 
 class TimeRepository {
-    var startMillis: Long = TimeUnit.MINUTES.toMillis(3)
+    var startMillis: Long = TimeUnit.SECONDS.toMillis(10)
         private set
     var increment: Long = TimeUnit.SECONDS.toMillis(2)
         private set
@@ -36,5 +36,10 @@ class TimeRepository {
     fun resetTime() {
         _firstMillisLeft.value = startMillis
         _secondMillisLeft.value = startMillis
+    }
+
+    fun setStartTime(newStartMillis: Long, newIncrement: Long) {
+        startMillis = newStartMillis
+        increment = newIncrement
     }
 }

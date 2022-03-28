@@ -1,10 +1,23 @@
 package com.itmofitip.chesstimer.presenter
 
-import com.itmofitip.chesstimer.repository.*
+import com.itmofitip.chesstimer.repository.PauseState
+import com.itmofitip.chesstimer.repository.TimeQuantityState
+import com.itmofitip.chesstimer.repository.Turn
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
 import com.itmofitip.chesstimer.view.TimerView
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 val FEW_TIME_MILLIS = TimeUnit.MINUTES.toMillis(1)
@@ -21,11 +34,20 @@ class TimerPresenter(private val view: TimerView) {
     private var secondJob: Job? = null
     private var turnForInactiveJob: Job? = null
 
-    init {
-        setStartTime()
+    private val activeJobs = mutableListOf<Job>()
+
+
+    fun attach() {
         observePauseState()
         observeTimeQuantityState()
         observeMillisLeft()
+    }
+
+    fun detach() {
+        activeJobs.forEach {
+            it.cancel()
+        }
+        activeJobs.clear()
     }
 
     private fun setStartTime() {
@@ -80,7 +102,7 @@ class TimerPresenter(private val view: TimerView) {
 
     @FlowPreview
     private fun observeMillisLeft() {
-        CoroutineScope(Dispatchers.Main).launch {
+        activeJobs.add(CoroutineScope(Dispatchers.Main).launch {
             timeRepository.firstMillisLeft.collect {
                 view.setFirstProgress(it.toFloat() / timeRepository.startMillis * 100)
                 when {
@@ -91,8 +113,8 @@ class TimerPresenter(private val view: TimerView) {
                     else -> timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.NORMAL)
                 }
             }
-        }
-        CoroutineScope(Dispatchers.Main).launch {
+        })
+        activeJobs.add(CoroutineScope(Dispatchers.Main).launch {
             timeRepository.secondMillisLeft.collect {
                 view.setSecondProgress(it.toFloat() / timeRepository.startMillis * 100)
                 when {
@@ -103,11 +125,11 @@ class TimerPresenter(private val view: TimerView) {
                     else -> timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.NORMAL)
                 }
             }
-        }
+        })
     }
 
     private fun observeTimeQuantityState() {
-        CoroutineScope(Dispatchers.Main).launch {
+        activeJobs.add(CoroutineScope(Dispatchers.Main).launch {
             timeQuantityRepository.firstTimeQuantityState.collect {
                 when (it) {
                     TimeQuantityState.FEW -> view.onFirstFewTime()
@@ -118,8 +140,8 @@ class TimerPresenter(private val view: TimerView) {
                     TimeQuantityState.NORMAL -> view.onFirstNormal()
                 }
             }
-        }
-        CoroutineScope(Dispatchers.Main).launch {
+        })
+        activeJobs.add(CoroutineScope(Dispatchers.Main).launch {
             timeQuantityRepository.secondTimeQuantityState.collect {
                 when (it) {
                     TimeQuantityState.FEW -> view.onSecondFewTime()
@@ -130,7 +152,7 @@ class TimerPresenter(private val view: TimerView) {
                     TimeQuantityState.NORMAL -> view.onSecondNormal()
                 }
             }
-        }
+        })
     }
 
     private fun observeTurnForInactive() {
@@ -145,7 +167,7 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     private fun observePauseState() {
-        CoroutineScope(Dispatchers.IO).launch {
+        activeJobs.add(CoroutineScope(Dispatchers.IO).launch {
             pauseRepository.pauseState.collect {
                 when (it) {
                     PauseState.PAUSE -> {
@@ -171,7 +193,7 @@ class TimerPresenter(private val view: TimerView) {
                     }
                 }
             }
-        }
+        })
     }
 
     @ExperimentalCoroutinesApi
