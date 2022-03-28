@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.presenter.SettingsPresenter
@@ -32,11 +33,20 @@ class SettingsFragment : Fragment(), SettingsView {
 
     override fun onStart() {
         super.onStart()
+        initButtons()
         timeRecyclerView = requireActivity().findViewById(R.id.time_recycler_view)
         timeRecyclerView.adapter = TimeAdapter(presenter.getTimeList(), presenter::onTimeItemChosen)
     }
 
     override fun onTimeItemChosen() {
         APP_ACTIVITY.supportFragmentManager.popBackStack()
+    }
+
+    fun initButtons() {
+        with (requireActivity()) {
+            findViewById<ImageView>(R.id.return_button).setOnClickListener {
+                APP_ACTIVITY.supportFragmentManager.popBackStack()
+            }
+        }
     }
 }

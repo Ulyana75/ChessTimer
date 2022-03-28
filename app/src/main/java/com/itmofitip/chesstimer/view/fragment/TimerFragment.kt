@@ -31,14 +31,10 @@ class TimerFragment : Fragment(), TimerView {
         return inflater.inflate(R.layout.fragment_timer, container, false)
     }
 
-    override fun onStart() {
-        super.onStart()
-        initButtons()
-    }
-
     override fun onResume() {
         super.onResume()
         presenter.attach()
+        initButtons()
     }
 
     override fun onStop() {
