@@ -9,6 +9,8 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:letterSpacing">0.05</item>
         <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
     <style name="settings_separator">
@@ -23,5 +25,21 @@
         <item name="android:textColor">@color/black</item>
         <item name="fontFamily">@font/oswald_regular</item>
         <item name="android:letterSpacing">0.05</item>
+    </style>
+
+    <style name="circular_progress_bar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">90dp</item>
+        <item name="android:layout_marginStart">54dp</item>
+        <item name="android:layout_marginEnd">54dp</item>
+        <item name="android:layout_marginBottom">54dp</item>
+    </style>
+
+    <style name="inactive_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:background">@color/black_transparent</item>
     </style>
 </resources>

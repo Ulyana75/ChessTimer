@@ -1,7 +1,5 @@
 package com.itmofitip.chesstimer.view.fragment
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,6 +10,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.presenter.TimerPresenter
+import com.itmofitip.chesstimer.utilities.animateVisibilityToGone
+import com.itmofitip.chesstimer.utilities.animateVisibilityToInvisible
+import com.itmofitip.chesstimer.utilities.animateVisibilityToVisible
 import com.itmofitip.chesstimer.view.CircularProgressBar
 import com.itmofitip.chesstimer.view.TimerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,7 +25,6 @@ import com.itmofitip.chesstimer.utilities.replaceFragment
 class TimerFragment : Fragment(), TimerView {
 
     private val presenter = TimerPresenter(this)
-    private val animationDuration = 200L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -186,25 +186,5 @@ class TimerFragment : Fragment(), TimerView {
             .setBackgroundColor(
                 requireActivity().resources.getColor(R.color.white)
             )
-    }
-
-    private fun View.animateVisibilityToVisible() {
-        alpha = 0f
-        visibility = View.VISIBLE
-        animate().alpha(1f).setDuration(animationDuration).setListener(null)
-    }
-
-    private fun View.animateVisibilityToInvisible() {
-        animate().alpha(0f).setDuration(animationDuration).setListener(null)
-    }
-
-    private fun View.animateVisibilityToGone() {
-        animate().alpha(0f).setDuration(animationDuration).setListener(
-            object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    visibility = View.GONE
-                }
-            }
-        )
     }
 }

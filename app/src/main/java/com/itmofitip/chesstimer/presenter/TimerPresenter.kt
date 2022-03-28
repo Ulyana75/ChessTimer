@@ -4,6 +4,7 @@ import com.itmofitip.chesstimer.repository.PauseState
 import com.itmofitip.chesstimer.repository.TimeQuantityState
 import com.itmofitip.chesstimer.repository.Turn
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
+import com.itmofitip.chesstimer.utilities.getNormalizedTime
 import com.itmofitip.chesstimer.view.TimerView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,10 +49,6 @@ class TimerPresenter(private val view: TimerView) {
         if (pauseRepository.pauseState.value == PauseState.ACTIVE) {
             stopTimer()
         }
-        activeJobs.forEach {
-            it.cancel()
-        }
-        activeJobs.clear()
         cancelAllJobs()
         timeRepository.setLastChosenTime()
     }
@@ -101,6 +98,8 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     private fun cancelAllJobs() {
+        activeJobs.forEach { it.cancel() }
+        activeJobs.clear()
         firstJob?.cancel()
         secondJob?.cancel()
         turnForInactiveJob?.cancel()
@@ -180,7 +179,9 @@ class TimerPresenter(private val view: TimerView) {
                         withContext(Dispatchers.Main) {
                             view.onPauseState()
                         }
-                        cancelAllJobs()
+                        firstJob?.cancel()
+                        secondJob?.cancel()
+                        turnForInactiveJob?.cancel()
                     }
                     PauseState.ACTIVE -> {
                         withContext(Dispatchers.Main) {
@@ -191,7 +192,9 @@ class TimerPresenter(private val view: TimerView) {
                     }
                     PauseState.NOT_STARTED -> {
                         timeRepository.resetTime()
-                        cancelAllJobs()
+                        firstJob?.cancel()
+                        secondJob?.cancel()
+                        turnForInactiveJob?.cancel()
                         withContext(Dispatchers.Main) {
                             view.onNotStartedState()
                             setTime()
@@ -252,13 +255,5 @@ class TimerPresenter(private val view: TimerView) {
                 }
             }
         }
-    }
-
-    private fun getNormalizedTime(millis: Long): String {
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(millis - minutes * 60_000)
-        val strMinutes = if (minutes < 10) "0$minutes" else "$minutes"
-        val strSeconds = if (seconds < 10) "0$seconds" else "$seconds"
-        return "$strMinutes:$strSeconds"
     }
 }

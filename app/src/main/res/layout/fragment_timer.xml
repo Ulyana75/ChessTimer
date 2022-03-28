@@ -18,20 +18,14 @@
 
         <com.itmofitip.chesstimer.view.CircularProgressBar
             android:id="@+id/progress_bar_second"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             app:progressBarThickness="8dp"
             app:progressbarColor="@color/main_blue"
-            android:layout_marginTop="90dp"
-            android:layout_marginStart="54dp"
-            android:layout_marginEnd="54dp"
-            android:layout_marginBottom="54dp"/>
+            style="@style/circular_progress_bar"
+            tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/time_second"
             style="@style/time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/progress_bar_second"
             app:layout_constraintEnd_toEndOf="@+id/progress_bar_second"
             app:layout_constraintBottom_toBottomOf="@id/progress_bar_second"
@@ -40,10 +34,8 @@
 
         <View
             android:id="@+id/inactive_second"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:background="@color/black_transparent"/>
+            style="@style/inactive_view"
+            tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -59,20 +51,14 @@
 
         <com.itmofitip.chesstimer.view.CircularProgressBar
             android:id="@+id/progress_bar_first"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="54dp"
-            android:layout_marginTop="90dp"
-            android:layout_marginEnd="54dp"
-            android:layout_marginBottom="54dp"
+            style="@style/circular_progress_bar"
             app:progressBarThickness="8dp"
-            app:progressbarColor="@color/main_blue" />
+            app:progressbarColor="@color/main_blue"
+            tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/time_first"
             style="@style/time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/progress_bar_first"
             app:layout_constraintEnd_toEndOf="@+id/progress_bar_first"
             app:layout_constraintBottom_toBottomOf="@id/progress_bar_first"
@@ -81,10 +67,8 @@
 
         <View
             android:id="@+id/inactive_first"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:background="@color/black_transparent" />
+            style="@style/inactive_view"
+            tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
