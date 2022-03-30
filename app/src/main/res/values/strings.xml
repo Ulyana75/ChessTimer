@@ -4,4 +4,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings_header_time">Time</string>
     <string name="settings_add_time">add</string>
+    <string name="settings_header_sound"><![CDATA[Sound&Vibration]]></string>
+    <string name="sound_title">Sound</string>
+    <string name="vibration_title">Vibration</string>
+    <string name="settings_header_theme">Theme</string>
+    <string name="dark_theme_title">Dark theme</string>
 </resources>
