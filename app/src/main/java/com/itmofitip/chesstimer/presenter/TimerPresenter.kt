@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-val FEW_TIME_MILLIS = TimeUnit.MINUTES.toMillis(1)
+val FEW_TIME_MILLIS = TimeUnit.SECONDS.toMillis(30)
 
 @FlowPreview
 @ExperimentalCoroutinesApi
