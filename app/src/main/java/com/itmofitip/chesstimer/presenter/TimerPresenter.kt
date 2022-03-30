@@ -1,5 +1,7 @@
 package com.itmofitip.chesstimer.presenter
 
+import android.media.MediaPlayer
+import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.repository.PauseState
 import com.itmofitip.chesstimer.repository.TimeQuantityState
 import com.itmofitip.chesstimer.repository.Turn
@@ -31,14 +33,17 @@ class TimerPresenter(private val view: TimerView) {
     private val pauseRepository = APP_ACTIVITY.pauseRepository
     private val timeRepository = APP_ACTIVITY.timeRepository
     private val timeQuantityRepository = APP_ACTIVITY.timeQuantityRepository
+    private val settingsSwitchesRepository = APP_ACTIVITY.settingsSwitchesRepository
     private var firstJob: Job? = null
     private var secondJob: Job? = null
     private var turnForInactiveJob: Job? = null
 
     private val activeJobs = mutableListOf<Job>()
+    private lateinit var mediaPlayer: MediaPlayer
 
 
     fun attach() {
+        mediaPlayer = MediaPlayer.create(APP_ACTIVITY, R.raw.timer_tap)
         setTime()
         observePauseState()
         observeTimeQuantityState()
@@ -46,11 +51,11 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     fun detach() {
+        mediaPlayer.release()
         if (pauseRepository.pauseState.value == PauseState.ACTIVE) {
             stopTimer()
         }
         cancelAllJobs()
-        timeRepository.setLastChosenTime()
     }
 
     private fun setTime() {
@@ -77,6 +82,7 @@ class TimerPresenter(private val view: TimerView) {
             if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.FIRST) {
                 timeRepository.incrementFirstTime()
             }
+            makeSound()
             startTimer()
             turnRepository.setTurn(Turn.SECOND)
         }
@@ -87,8 +93,19 @@ class TimerPresenter(private val view: TimerView) {
             if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.SECOND) {
                 timeRepository.incrementSecondTime()
             }
+            makeSound()
             startTimer()
             turnRepository.setTurn(Turn.FIRST)
+        }
+    }
+
+    private fun makeSound() {
+        if (settingsSwitchesRepository.isSoundOnClickChecked) {
+            val mp = MediaPlayer.create(APP_ACTIVITY, R.raw.timer_tap)
+            mp.setOnCompletionListener {
+                mp.release()
+            }
+            mp.start()
         }
     }
 

@@ -6,41 +6,35 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import java.util.concurrent.TimeUnit
 
-class LastChosenTimeRepository {
-
-    private var lastChosenMillis: Long? = null
-    private var lastChosenIncrementMillis: Long? = null
+@FlowPreview
+@ExperimentalCoroutinesApi
+class LastChosenTimeRepository : WorkerWithSavedData {
 
     val defaultLastChosenMillis = TimeUnit.MINUTES.toMillis(3)
     val defaultLastChosenIncrementMillis = TimeUnit.SECONDS.toMillis(2)
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
-    fun getLastChosenMillis(): Long {
-        if (lastChosenMillis == null) {
-            lastChosenMillis = APP_ACTIVITY.getPreferences(Context.MODE_PRIVATE)
-                .getLong(KEY_LAST_CHOSEN_MILLIS, defaultLastChosenMillis)
-        }
-        return lastChosenMillis!!
+    var lastChosenMillis: Long = defaultLastChosenMillis
+        private set
+    var lastChosenIncrementMillis: Long = defaultLastChosenIncrementMillis
+        private set
+
+    override fun initData() {
+        lastChosenMillis = APP_ACTIVITY.getPreferences(Context.MODE_PRIVATE)
+            .getLong(KEY_LAST_CHOSEN_MILLIS, defaultLastChosenMillis)
+        lastChosenIncrementMillis = APP_ACTIVITY.getPreferences(Context.MODE_PRIVATE)
+            .getLong(KEY_LAST_CHOSEN_INCREMENT_MILLIS, defaultLastChosenIncrementMillis)
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
-    fun getLastChosenIncrementMillis(): Long {
-        if (lastChosenIncrementMillis == null) {
-            lastChosenIncrementMillis = APP_ACTIVITY.getPreferences(Context.MODE_PRIVATE)
-                .getLong(KEY_LAST_CHOSEN_INCREMENT_MILLIS, defaultLastChosenIncrementMillis)
-        }
-        return lastChosenIncrementMillis!!
-    }
-
-    @FlowPreview
-    @ExperimentalCoroutinesApi
-    fun setLastChosenTime(millis: Long, incrementMillis: Long) {
+    override fun saveData() {
         with(APP_ACTIVITY.getPreferences(Context.MODE_PRIVATE).edit()) {
-            putLong(KEY_LAST_CHOSEN_MILLIS, millis)
-            putLong(KEY_LAST_CHOSEN_INCREMENT_MILLIS, incrementMillis)
+            putLong(KEY_LAST_CHOSEN_MILLIS, lastChosenMillis)
+            putLong(KEY_LAST_CHOSEN_INCREMENT_MILLIS, lastChosenIncrementMillis)
         }.apply()
+    }
+
+    fun setNewTime(millis: Long, incrementMillis: Long) {
+        lastChosenMillis = millis
+        lastChosenIncrementMillis - incrementMillis
     }
 
     companion object {

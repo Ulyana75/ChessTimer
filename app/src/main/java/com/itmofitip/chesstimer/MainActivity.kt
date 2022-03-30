@@ -2,12 +2,9 @@ package com.itmofitip.chesstimer
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.itmofitip.chesstimer.repository.PauseRepository
-import com.itmofitip.chesstimer.repository.SettingsTimeRepository
-import com.itmofitip.chesstimer.repository.TimeQuantityRepository
-import com.itmofitip.chesstimer.repository.TimeRepository
-import com.itmofitip.chesstimer.repository.TurnRepository
+import com.itmofitip.chesstimer.repository.*
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
+import com.itmofitip.chesstimer.utilities.SavedDataInitializer
 import com.itmofitip.chesstimer.utilities.replaceFragment
 import com.itmofitip.chesstimer.view.fragment.TimerFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,17 +20,27 @@ class MainActivity : AppCompatActivity() {
     val timeQuantityRepository = TimeQuantityRepository()
 
     val settingsTimeRepository = SettingsTimeRepository()
+    val settingsSwitchesRepository = SettingsSwitchesRepository()
+
+    private val savedDataInitializer = SavedDataInitializer(listOf(
+        timeRepository, settingsSwitchesRepository
+    ))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         APP_ACTIVITY = this
-        timeRepository.initStartTime()
         setContentView(R.layout.activity_main)
     }
 
     override fun onStart() {
         super.onStart()
+        savedDataInitializer.initSavedData()
         supportActionBar?.hide()
         replaceFragment(TimerFragment(), false)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        savedDataInitializer.saveData()
     }
 }

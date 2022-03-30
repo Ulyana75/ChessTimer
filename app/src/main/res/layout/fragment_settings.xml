@@ -41,15 +41,15 @@
 
         <TextView
             android:id="@+id/add_button"
-            android:layout_width="114dp"
+            android:layout_width="40dp"
             android:layout_height="40dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/time_separator"
-            style="@style/base_text"
+            style="@style/base_text_light"
             android:text="@string/settings_add_time"
             android:textSize="24sp"
-            android:background="@drawable/border_for_time_element"
+            android:background="@drawable/border_for_add_button"
             android:textAlignment="center"
             android:layout_marginTop="16dp"/>
 
@@ -78,36 +78,61 @@
             tools:ignore="MissingConstraints" />
 
         <TextView
-            android:id="@+id/sound"
+            android:id="@+id/sound_on_click"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/time_separator_2"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="20dp"
-            style="@style/base_text"
-            android:text="@string/sound_title"
+            style="@style/base_text_light"
+            android:text="@string/click_sound_title"
             android:textSize="24sp"
             android:layout_marginStart="36dp"/>
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch_sound"
+            android:id="@+id/switch_sound_on_click"
             android:layout_width="57dp"
             android:layout_height="29dp"
-            app:layout_constraintBottom_toBottomOf="@id/sound"
-            app:layout_constraintTop_toTopOf="@+id/sound"
+            app:layout_constraintBottom_toBottomOf="@id/sound_on_click"
+            app:layout_constraintTop_toTopOf="@+id/sound_on_click"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="52dp"
             android:thumb="@drawable/custom_thumb"
-            app:track="@drawable/custom_track"/>
+            app:track="@drawable/custom_track"
+            android:checked="true"/>
+
+        <TextView
+            android:id="@+id/sound_on_low_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/sound_on_click"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="4dp"
+            style="@style/base_text_light"
+            android:text="@string/sound_on_low_time_title"
+            android:textSize="24sp"
+            android:layout_marginStart="36dp"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_sound_low_time"
+            android:layout_width="57dp"
+            android:layout_height="29dp"
+            app:layout_constraintBottom_toBottomOf="@id/sound_on_low_time"
+            app:layout_constraintTop_toTopOf="@+id/sound_on_low_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="52dp"
+            android:thumb="@drawable/custom_thumb"
+            app:track="@drawable/custom_track"
+            android:checked="true"/>
 
         <TextView
             android:id="@+id/vibration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/sound"
+            app:layout_constraintTop_toBottomOf="@+id/sound_on_low_time"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="4dp"
-            style="@style/base_text"
+            style="@style/base_text_light"
             android:text="@string/vibration_title"
             android:textSize="24sp"
             android:layout_marginStart="36dp"/>
@@ -129,7 +154,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/settings_header_theme"
-            style="@style/base_text"
+            style="@style/base_text_light"
             android:textSize="36sp"
             app:layout_constraintTop_toBottomOf="@+id/vibration"
             android:layout_marginTop="35dp"
@@ -148,7 +173,8 @@
             app:layout_constraintTop_toBottomOf="@+id/time_separator_3"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="20dp"
-            style="@style/base_text"
+            android:layout_marginBottom="20dp"
+            style="@style/base_text_light"
             android:text="@string/dark_theme_title"
             android:textSize="24sp"
             android:layout_marginStart="36dp"/>

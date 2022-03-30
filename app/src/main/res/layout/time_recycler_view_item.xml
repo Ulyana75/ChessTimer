@@ -12,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        style="@style/base_text"
+        style="@style/base_text_light"
         tools:text="3+2"
         android:textSize="24sp"
         android:background="@drawable/border_for_time_element"

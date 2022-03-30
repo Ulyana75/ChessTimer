@@ -14,7 +14,8 @@
         app:layout_constraintBottom_toTopOf="@id/guideline"
         android:clickable="true"
         android:focusable="true"
-        android:rotation="180">
+        android:rotation="180"
+        android:soundEffectsEnabled="false">
 
         <com.itmofitip.chesstimer.view.CircularProgressBar
             android:id="@+id/progress_bar_second"
@@ -47,7 +48,8 @@
         app:layout_constraintTop_toBottomOf="@+id/guideline"
         android:clickable="true"
         android:focusable="true"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:soundEffectsEnabled="false">
 
         <com.itmofitip.chesstimer.view.CircularProgressBar
             android:id="@+id/progress_bar_first"

@@ -1,15 +1,13 @@
 package com.itmofitip.chesstimer.repository
 
-import android.util.Log
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.util.concurrent.TimeUnit
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class TimeRepository {
+class TimeRepository : WorkerWithSavedData {
     private val lastChosenTimeRepository = LastChosenTimeRepository()
 
     var startMillis: Long = lastChosenTimeRepository.defaultLastChosenMillis
@@ -48,16 +46,18 @@ class TimeRepository {
     fun setStartTime(newStartMillis: Long, newIncrement: Long) {
         startMillis = newStartMillis
         increment = newIncrement
+        lastChosenTimeRepository.setNewTime(newStartMillis, newIncrement)
     }
 
-    fun initStartTime() {
+    override fun initData() {
+        lastChosenTimeRepository.initData()
         setStartTime(
-            lastChosenTimeRepository.getLastChosenMillis(),
-            lastChosenTimeRepository.getLastChosenIncrementMillis()
+            lastChosenTimeRepository.lastChosenMillis,
+            lastChosenTimeRepository.lastChosenIncrementMillis
         )
     }
 
-    fun setLastChosenTime() {
-        lastChosenTimeRepository.setLastChosenTime(startMillis, increment)
+    override fun saveData() {
+        lastChosenTimeRepository.saveData()
     }
 }

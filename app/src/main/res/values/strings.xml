@@ -1,12 +1,11 @@
 <resources>
     <string name="app_name">ChessTimer</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="settings_header_time">Time</string>
-    <string name="settings_add_time">add</string>
+    <string name="settings_add_time">+</string>
     <string name="settings_header_sound"><![CDATA[Sound&Vibration]]></string>
-    <string name="sound_title">Sound</string>
+    <string name="click_sound_title">Sound on click</string>
     <string name="vibration_title">Vibration</string>
     <string name="settings_header_theme">Theme</string>
     <string name="dark_theme_title">Dark theme</string>
+    <string name="sound_on_low_time_title">Sound on low time</string>
 </resources>
