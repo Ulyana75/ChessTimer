@@ -72,7 +72,7 @@
             android:layout_marginStart="36dp"/>
 
         <View
-            android:id="@+id/time_separator_2"
+            android:id="@+id/sound_separator"
             app:layout_constraintTop_toBottomOf="@id/sounds_header"
             style="@style/settings_separator"
             tools:ignore="MissingConstraints" />
@@ -81,7 +81,7 @@
             android:id="@+id/sound_on_click"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/time_separator_2"
+            app:layout_constraintTop_toBottomOf="@+id/sound_separator"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="20dp"
             style="@style/base_text_light"
@@ -161,7 +161,7 @@
             android:layout_marginStart="36dp"/>
 
         <View
-            android:id="@+id/time_separator_3"
+            android:id="@+id/theme_separator"
             app:layout_constraintTop_toBottomOf="@id/theme_header"
             style="@style/settings_separator"
             tools:ignore="MissingConstraints" />
@@ -170,7 +170,7 @@
             android:id="@+id/dark_theme"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/time_separator_3"
+            app:layout_constraintTop_toBottomOf="@+id/theme_separator"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
