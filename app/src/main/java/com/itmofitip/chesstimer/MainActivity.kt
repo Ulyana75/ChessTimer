@@ -22,9 +22,11 @@ class MainActivity : AppCompatActivity() {
     val settingsTimeRepository = SettingsTimeRepository()
     val settingsSwitchesRepository = SettingsSwitchesRepository()
 
-    private val savedDataInitializer = SavedDataInitializer(listOf(
-        timeRepository, settingsSwitchesRepository
-    ))
+    private val savedDataInitializer = SavedDataInitializer(
+        listOf(
+            timeRepository, settingsSwitchesRepository, settingsTimeRepository
+        )
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

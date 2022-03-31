@@ -50,3 +50,7 @@ fun View.animateVisibilityToGone() {
         }
     )
 }
+
+fun Int.toStringWithTwoDigits(): String {
+    return if (this < 10) "0$this" else "$this"
+}

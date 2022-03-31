@@ -29,9 +29,12 @@ class SettingsPresenter(private val view: SettingsView) {
 
     fun onTimeItemChosen(timeItem: TimeItem) {
         timeRepository.setStartTime(
-            TimeUnit.MINUTES.toMillis(timeItem.minutes) + TimeUnit.SECONDS.toMillis(timeItem.seconds),
-            TimeUnit.MINUTES.toMillis(timeItem.incrementMinutes) +
-                    TimeUnit.SECONDS.toMillis(timeItem.incrementSeconds)
+            TimeUnit.HOURS.toMillis(timeItem.hours.toLong()) +
+                    TimeUnit.MINUTES.toMillis(timeItem.minutes.toLong()) +
+                    TimeUnit.SECONDS.toMillis(timeItem.seconds.toLong()),
+            TimeUnit.MINUTES.toMillis(timeItem.incrementHours.toLong()) +
+                    TimeUnit.MINUTES.toMillis(timeItem.incrementMinutes.toLong()) +
+                    TimeUnit.SECONDS.toMillis(timeItem.incrementSeconds.toLong())
         )
         pauseRepository.setPauseState(PauseState.NOT_STARTED)
         view.onTimeItemChosen()

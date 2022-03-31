@@ -12,4 +12,6 @@
     <string name="h">h :</string>
     <string name="m">m :</string>
     <string name="s">s</string>
+    <string name="increment_header">Increment</string>
+    <string name="save_button_text">Save</string>
 </resources>

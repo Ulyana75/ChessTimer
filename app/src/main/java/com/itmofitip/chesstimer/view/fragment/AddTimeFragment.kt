@@ -4,11 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import com.itmofitip.chesstimer.R
+import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
+import com.itmofitip.chesstimer.view.AddTimeView
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
-class AddTimeFragment : Fragment() {
+@FlowPreview
+@ExperimentalCoroutinesApi
+class AddTimeFragment : Fragment(), AddTimeView {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,6 +28,19 @@ class AddTimeFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         initPickers()
+        initButtons()
+    }
+
+    override fun onSaveButtonClicked() {
+        APP_ACTIVITY.supportFragmentManager.popBackStack()
+    }
+
+    private fun initButtons() {
+        with(requireActivity()) {
+            findViewById<ImageView>(R.id.return_button_2).setOnClickListener {
+                APP_ACTIVITY.supportFragmentManager.popBackStack()
+            }
+        }
     }
 
     private fun initPickers() {
@@ -45,7 +65,7 @@ class AddTimeFragment : Fragment() {
                 minValue = 0
                 maxValue = 59
             }
-            with(findViewById<NumberPicker>(R.id.game_time_seconds_picker)) {
+            with(findViewById<NumberPicker>(R.id.increment_seconds_picker)) {
                 minValue = 0
                 maxValue = 59
             }

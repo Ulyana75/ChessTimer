@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.presenter.SettingsPresenter
 import com.itmofitip.chesstimer.repository.SwitchType
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
+import com.itmofitip.chesstimer.utilities.replaceFragment
 import com.itmofitip.chesstimer.view.SettingsView
 import com.itmofitip.chesstimer.view.TimeAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -80,6 +82,9 @@ class SettingsFragment : Fragment(), SettingsView {
             }
             findViewById<SwitchCompat>(R.id.switch_dark_theme).setOnCheckedChangeListener { _, isChecked ->
                 presenter.onSwitchCheckedChange(SwitchType.DARK_THEME, isChecked)
+            }
+            findViewById<TextView>(R.id.add_button).setOnClickListener {
+                replaceFragment(AddTimeFragment(), true)
             }
         }
     }

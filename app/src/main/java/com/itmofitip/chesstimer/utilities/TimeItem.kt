@@ -1,11 +1,15 @@
 package com.itmofitip.chesstimer.utilities
 
-import java.io.Serializable
+data class TimeItems(
+    val items: MutableList<TimeItem>
+)
 
 data class TimeItem(
     val name: String,
-    val minutes: Long,
-    val seconds: Long,
-    val incrementMinutes: Long = 0,
-    val incrementSeconds: Long = 0
-) : Serializable
+    val hours: Int = 0,
+    val minutes: Int,
+    val seconds: Int,
+    val incrementHours: Int = 0,
+    val incrementMinutes: Int = 0,
+    val incrementSeconds: Int = 0
+)
