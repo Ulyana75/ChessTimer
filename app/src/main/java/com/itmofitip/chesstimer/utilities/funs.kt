@@ -24,11 +24,16 @@ fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
 }
 
 fun getNormalizedTime(millis: Long): String {
-    val minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
-    val seconds = TimeUnit.MILLISECONDS.toSeconds(millis - minutes * 60_000)
+    val hours = TimeUnit.MILLISECONDS.toHours(millis)
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(millis - TimeUnit.HOURS.toMillis(hours))
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(
+        millis - TimeUnit.HOURS.toMillis(hours) - TimeUnit.MINUTES.toMillis(minutes)
+    )
     val strMinutes = if (minutes < 10) "0$minutes" else "$minutes"
     val strSeconds = if (seconds < 10) "0$seconds" else "$seconds"
-    return "$strMinutes:$strSeconds"
+    val strHours = if (hours < 10) "0$hours" else "$hours"
+    return if (hours == 0L) "$strMinutes:$strSeconds"
+    else "$strHours:$strMinutes:$strSeconds"
 }
 
 fun View.animateVisibilityToVisible() {

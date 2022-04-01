@@ -19,6 +19,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import com.itmofitip.chesstimer.utilities.replaceFragment
 
+const val LONG_LENGTH_TEXT_SIZE = 52
+const val SHORT_LENGTH_TEXT_SIZE = 72
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -186,5 +188,25 @@ class TimerFragment : Fragment(), TimerView {
             .setBackgroundColor(
                 requireActivity().resources.getColor(R.color.white)
             )
+    }
+
+    override fun onFirstShortTimeStr() {
+        requireActivity().findViewById<TextView>(R.id.time_first).textSize =
+            SHORT_LENGTH_TEXT_SIZE.toFloat()
+    }
+
+    override fun onSecondShortTimeStr() {
+        requireActivity().findViewById<TextView>(R.id.time_second).textSize =
+            SHORT_LENGTH_TEXT_SIZE.toFloat()
+    }
+
+    override fun onFirstLongTimeStr() {
+        requireActivity().findViewById<TextView>(R.id.time_first).textSize =
+            LONG_LENGTH_TEXT_SIZE.toFloat()
+    }
+
+    override fun onSecondLongTimeStr() {
+        requireActivity().findViewById<TextView>(R.id.time_second).textSize =
+            LONG_LENGTH_TEXT_SIZE.toFloat()
     }
 }

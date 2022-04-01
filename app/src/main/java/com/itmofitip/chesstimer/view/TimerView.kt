@@ -20,4 +20,9 @@ interface TimerView {
     fun onSecondFinished()
     fun onFirstNormal()
     fun onSecondNormal()
+
+    fun onFirstShortTimeStr()
+    fun onSecondShortTimeStr()
+    fun onFirstLongTimeStr()
+    fun onSecondLongTimeStr()
 }

@@ -34,7 +34,7 @@ class LastChosenTimeRepository : WorkerWithSavedData {
 
     fun setNewTime(millis: Long, incrementMillis: Long) {
         lastChosenMillis = millis
-        lastChosenIncrementMillis - incrementMillis
+        lastChosenIncrementMillis = incrementMillis
     }
 
     companion object {

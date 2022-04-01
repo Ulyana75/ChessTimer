@@ -38,7 +38,9 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         savedDataInitializer.initSavedData()
         supportActionBar?.hide()
-        replaceFragment(TimerFragment(), false)
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            replaceFragment(TimerFragment(), false)
+        }
     }
 
     override fun onStop() {

@@ -67,7 +67,7 @@ class SettingsTimeRepository : WorkerWithSavedData {
     }
 
     fun addNewTimeItem(item: TimeItem) {
-        timeItems.items.add(item)
+        timeItems.items.add(0, item)
     }
 
     companion object {

@@ -24,6 +24,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 val FEW_TIME_MILLIS = TimeUnit.SECONDS.toMillis(30)
+const val LONG_TIME_MINIMAL_LENGTH = 8
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -59,6 +60,7 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     private fun setTime() {
+        adjustTextSize(getNormalizedTime(timeRepository.firstMillisLeft.value))
         view.setFirstTime(getNormalizedTime(timeRepository.firstMillisLeft.value))
         view.setSecondTime(getNormalizedTime(timeRepository.secondMillisLeft.value))
     }
@@ -226,11 +228,15 @@ class TimerPresenter(private val view: TimerView) {
     private fun observeTime() {
         firstJob = CoroutineScope(Dispatchers.Main).launch {
             getFirstTimeFlow().collect { time ->
+                if (time.length >= LONG_TIME_MINIMAL_LENGTH) view.onFirstLongTimeStr()
+                else view.onFirstShortTimeStr()
                 view.setFirstTime(time)
             }
         }
         secondJob = CoroutineScope(Dispatchers.Main).launch {
             getSecondTimeFlow().collect { time ->
+                if (time.length >= LONG_TIME_MINIMAL_LENGTH) view.onSecondLongTimeStr()
+                else view.onSecondShortTimeStr()
                 view.setSecondTime(time)
             }
         }
@@ -271,6 +277,16 @@ class TimerPresenter(private val view: TimerView) {
                     emit(getNormalizedTime(timeRepository.secondMillisLeft.value))
                 }
             }
+        }
+    }
+
+    private fun adjustTextSize(str: String) {
+        if (str.length >= LONG_TIME_MINIMAL_LENGTH) {
+            view.onFirstLongTimeStr()
+            view.onSecondLongTimeStr()
+        } else {
+            view.onFirstShortTimeStr()
+            view.onSecondShortTimeStr()
         }
     }
 }
