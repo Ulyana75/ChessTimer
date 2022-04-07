@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.presenter.AddTimePresenter
@@ -40,6 +41,13 @@ class AddTimeFragment : Fragment(), AddTimeView {
     }
 
     override fun onWrongEnteredTime() {
+        with(requireContext()) {
+            Toast.makeText(
+                this,
+                resources.getString(R.string.on_wrong_time_entered),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun initButtons() {

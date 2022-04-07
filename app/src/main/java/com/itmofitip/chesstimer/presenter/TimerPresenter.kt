@@ -24,6 +24,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 val FEW_TIME_MILLIS = TimeUnit.SECONDS.toMillis(30)
+val NEED_MS_TIME_MILLIS = TimeUnit.SECONDS.toMillis(20)
 const val LONG_TIME_MINIMAL_LENGTH = 8
 
 @FlowPreview
@@ -81,10 +82,12 @@ class TimerPresenter(private val view: TimerView) {
 
     fun onFirstTimeButtonClicked() {
         if (gameNotFinished()) {
-            if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.FIRST) {
-                timeRepository.incrementFirstTime()
+            if (turnRepository.turn.value == Turn.FIRST) {
+                makeSound()
+                if (pauseRepository.pauseState.value != PauseState.NOT_STARTED) {
+                    timeRepository.incrementFirstTime()
+                }
             }
-            makeSound()
             startTimer()
             turnRepository.setTurn(Turn.SECOND)
         }
@@ -92,10 +95,12 @@ class TimerPresenter(private val view: TimerView) {
 
     fun onSecondTimeButtonClicked() {
         if (gameNotFinished()) {
-            if (pauseRepository.pauseState.value != PauseState.NOT_STARTED && turnRepository.turn.value == Turn.SECOND) {
-                timeRepository.incrementSecondTime()
+            if (turnRepository.turn.value == Turn.SECOND) {
+                makeSound()
+                if (pauseRepository.pauseState.value != PauseState.NOT_STARTED) {
+                    timeRepository.incrementSecondTime()
+                }
             }
-            makeSound()
             startTimer()
             turnRepository.setTurn(Turn.FIRST)
         }
@@ -131,6 +136,10 @@ class TimerPresenter(private val view: TimerView) {
                 view.setFirstProgress(it.toFloat() / timeRepository.startMillis * 100)
                 when {
                     it <= 0 -> timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.FINISHED)
+                    it < NEED_MS_TIME_MILLIS -> {
+                        timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.NEED_MS)
+                        view.setFirstMs("${it % 1000}")
+                    }
                     it < FEW_TIME_MILLIS -> timeQuantityRepository.setFirstTimeQuantityState(
                         TimeQuantityState.FEW
                     )
@@ -143,6 +152,10 @@ class TimerPresenter(private val view: TimerView) {
                 view.setSecondProgress(it.toFloat() / timeRepository.startMillis * 100)
                 when {
                     it <= 0 -> timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.FINISHED)
+                    it < NEED_MS_TIME_MILLIS -> {
+                        timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.NEED_MS)
+                        view.setSecondMs("${it % 1000}")
+                    }
                     it < FEW_TIME_MILLIS -> timeQuantityRepository.setSecondTimeQuantityState(
                         TimeQuantityState.FEW
                     )
@@ -162,6 +175,7 @@ class TimerPresenter(private val view: TimerView) {
                         stopTimer()
                     }
                     TimeQuantityState.NORMAL -> view.onFirstNormal()
+                    TimeQuantityState.NEED_MS -> view.onFirstNeedMs()
                 }
             }
         })
@@ -174,6 +188,7 @@ class TimerPresenter(private val view: TimerView) {
                         stopTimer()
                     }
                     TimeQuantityState.NORMAL -> view.onSecondNormal()
+                    TimeQuantityState.NEED_MS -> view.onSecondNeedMs()
                 }
             }
         })

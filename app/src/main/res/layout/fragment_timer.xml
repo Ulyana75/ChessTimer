@@ -24,14 +24,33 @@
             style="@style/circular_progress_bar"
             tools:ignore="MissingConstraints" />
 
-        <TextView
-            android:id="@+id/time_second"
-            style="@style/time_text"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/progress_bar_second"
             app:layout_constraintEnd_toEndOf="@+id/progress_bar_second"
             app:layout_constraintBottom_toBottomOf="@id/progress_bar_second"
             app:layout_constraintTop_toTopOf="@id/progress_bar_second"
-            tools:text="05:00"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/time_second"
+                style="@style/time_text"
+                tools:text="05:00"/>
+
+            <TextView
+                android:id="@+id/time_ms_second"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/base_text"
+                android:textSize="42sp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:layout_marginTop="-32dp"
+                tools:text="022ms"
+                android:visibility="gone"/>
+
+        </LinearLayout>
 
         <View
             android:id="@+id/inactive_second"
@@ -56,16 +75,35 @@
             style="@style/circular_progress_bar"
             app:progressBarThickness="8dp"
             app:progressbarColor="@color/main_blue"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"/>
 
-        <TextView
-            android:id="@+id/time_first"
-            style="@style/time_text"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="@+id/progress_bar_first"
             app:layout_constraintEnd_toEndOf="@+id/progress_bar_first"
             app:layout_constraintBottom_toBottomOf="@id/progress_bar_first"
             app:layout_constraintTop_toTopOf="@id/progress_bar_first"
-            tools:text="05:00"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/time_first"
+                style="@style/time_text"
+                tools:text="05:00"/>
+
+            <TextView
+                android:id="@+id/time_ms_first"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/base_text"
+                android:textSize="42sp"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:layout_marginTop="-32dp"
+                tools:text="022ms"
+                android:visibility="gone"/>
+
+        </LinearLayout>
 
         <View
             android:id="@+id/inactive_first"

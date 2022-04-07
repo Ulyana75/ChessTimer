@@ -144,6 +144,7 @@ class TimerFragment : Fragment(), TimerView {
             .setBackgroundColor(
                 requireActivity().resources.getColor(R.color.white)
             )
+        requireActivity().findViewById<TextView>(R.id.time_ms_first).visibility = View.GONE
     }
 
     override fun onSecondFewTime() {
@@ -154,6 +155,7 @@ class TimerFragment : Fragment(), TimerView {
             .setBackgroundColor(
                 requireActivity().resources.getColor(R.color.white)
             )
+        requireActivity().findViewById<TextView>(R.id.time_ms_second).visibility = View.GONE
     }
 
     override fun onFirstFinished() {
@@ -178,6 +180,7 @@ class TimerFragment : Fragment(), TimerView {
             .setBackgroundColor(
                 requireActivity().resources.getColor(R.color.white)
             )
+        requireActivity().findViewById<TextView>(R.id.time_ms_first).visibility = View.GONE
     }
 
     override fun onSecondNormal() {
@@ -188,6 +191,23 @@ class TimerFragment : Fragment(), TimerView {
             .setBackgroundColor(
                 requireActivity().resources.getColor(R.color.white)
             )
+        requireActivity().findViewById<TextView>(R.id.time_ms_second).visibility = View.GONE
+    }
+
+    override fun onFirstNeedMs() {
+        requireActivity().findViewById<TextView>(R.id.time_ms_first).visibility = View.VISIBLE
+    }
+
+    override fun onSecondNeedMs() {
+        requireActivity().findViewById<TextView>(R.id.time_ms_second).visibility = View.VISIBLE
+    }
+
+    override fun setFirstMs(ms: String) {
+        requireActivity().findViewById<TextView>(R.id.time_ms_first).text = ms
+    }
+
+    override fun setSecondMs(ms: String) {
+        requireActivity().findViewById<TextView>(R.id.time_ms_second).text = ms
     }
 
     override fun onFirstShortTimeStr() {

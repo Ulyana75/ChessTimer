@@ -14,4 +14,5 @@
     <string name="s">s</string>
     <string name="increment_header">Increment</string>
     <string name="save_button_text">Save</string>
+    <string name="on_wrong_time_entered">Time can\'t be a zero!</string>
 </resources>

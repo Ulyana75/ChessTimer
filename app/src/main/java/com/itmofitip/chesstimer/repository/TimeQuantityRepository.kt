@@ -23,5 +23,5 @@ class TimeQuantityRepository {
 }
 
 enum class TimeQuantityState {
-    FEW, FINISHED, NORMAL
+    FEW, FINISHED, NORMAL, NEED_MS
 }
