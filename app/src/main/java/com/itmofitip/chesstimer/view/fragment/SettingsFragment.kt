@@ -1,10 +1,12 @@
 package com.itmofitip.chesstimer.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
@@ -25,6 +27,7 @@ class SettingsFragment : Fragment(), SettingsView {
 
     private val presenter = SettingsPresenter(this)
     private lateinit var timeRecyclerView: RecyclerView
+    private lateinit var adapter: TimeAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +42,13 @@ class SettingsFragment : Fragment(), SettingsView {
         presenter.attach()
         initButtons()
         timeRecyclerView = requireActivity().findViewById(R.id.time_recycler_view)
-        timeRecyclerView.adapter = TimeAdapter(presenter.getTimeList(), presenter::onTimeItemChosen)
+        adapter = TimeAdapter(
+            presenter.getTimeList(),
+            presenter::onTimeItemChosen,
+            this::onTimeItemLongClick
+        )
+        timeRecyclerView.adapter = adapter
+        registerForContextMenu(timeRecyclerView)
     }
 
     override fun onStop() {
@@ -87,5 +96,24 @@ class SettingsFragment : Fragment(), SettingsView {
                 replaceFragment(AddTimeFragment(), true)
             }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun onTimeItemLongClick(position: Int, view: View) {
+        val popup = PopupMenu(requireContext(), view)
+        popup.inflate(R.menu.delete_menu)
+        popup.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_delete -> {
+                    presenter.onDeleteInMenuSelected(position)
+                    val newData = presenter.getTimeList()
+                    adapter.setData(newData)
+                    adapter.notifyDataSetChanged()
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
     }
 }

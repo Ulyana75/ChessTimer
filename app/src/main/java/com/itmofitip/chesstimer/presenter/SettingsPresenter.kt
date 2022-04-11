@@ -43,6 +43,10 @@ class SettingsPresenter(private val view: SettingsView) {
         settingsSwitchesRepository.setNewIsChecked(switchType, isChecked)
     }
 
+    fun onDeleteInMenuSelected(position: Int) {
+        settingsTimeRepository.removeItem(position)
+    }
+
     private fun initSwitchesInView() {
         with(settingsSwitchesRepository) {
             view.setSwitchIsChecked(SwitchType.SOUND_ON_CLICK, isSoundOnClickChecked)

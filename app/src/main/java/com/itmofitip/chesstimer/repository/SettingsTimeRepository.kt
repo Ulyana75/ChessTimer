@@ -49,7 +49,7 @@ class SettingsTimeRepository : WorkerWithSavedData {
     private var timeItems = defaultTimeItems
 
     fun getTimeList(): List<TimeItem> {
-        return timeItems.items
+        return timeItems.items.toList()
     }
 
     override fun initData() {
@@ -68,6 +68,10 @@ class SettingsTimeRepository : WorkerWithSavedData {
 
     fun addNewTimeItem(item: TimeItem) {
         timeItems.items.add(0, item)
+    }
+
+    fun removeItem(position: Int) {
+        timeItems.items.removeAt(position)
     }
 
     companion object {
