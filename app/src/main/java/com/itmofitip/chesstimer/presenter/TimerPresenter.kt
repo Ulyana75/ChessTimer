@@ -41,11 +41,9 @@ class TimerPresenter(private val view: TimerView) {
     private var turnForInactiveJob: Job? = null
 
     private val activeJobs = mutableListOf<Job>()
-    private lateinit var mediaPlayer: MediaPlayer
 
 
     fun attach() {
-        mediaPlayer = MediaPlayer.create(APP_ACTIVITY, R.raw.timer_tap)
         setTime()
         observePauseState()
         observeTimeQuantityState()
@@ -53,7 +51,6 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     fun detach() {
-        mediaPlayer.release()
         if (pauseRepository.pauseState.value == PauseState.ACTIVE) {
             stopTimer()
         }
@@ -138,7 +135,7 @@ class TimerPresenter(private val view: TimerView) {
                     it <= 0 -> timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.FINISHED)
                     it < NEED_MS_TIME_MILLIS -> {
                         timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.NEED_MS)
-                        view.setFirstMs("${it % 1000}")
+                        view.setFirstMs("${it % 1000}ms")
                     }
                     it < FEW_TIME_MILLIS -> timeQuantityRepository.setFirstTimeQuantityState(
                         TimeQuantityState.FEW
@@ -154,7 +151,7 @@ class TimerPresenter(private val view: TimerView) {
                     it <= 0 -> timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.FINISHED)
                     it < NEED_MS_TIME_MILLIS -> {
                         timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.NEED_MS)
-                        view.setSecondMs("${it % 1000}")
+                        view.setSecondMs("${it % 1000}ms")
                     }
                     it < FEW_TIME_MILLIS -> timeQuantityRepository.setSecondTimeQuantityState(
                         TimeQuantityState.FEW

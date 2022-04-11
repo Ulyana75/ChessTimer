@@ -25,7 +25,7 @@ import kotlinx.coroutines.FlowPreview
 @ExperimentalCoroutinesApi
 class SettingsFragment : Fragment(), SettingsView {
 
-    private val presenter = SettingsPresenter(this)
+    private lateinit var presenter: SettingsPresenter
     private lateinit var timeRecyclerView: RecyclerView
     private lateinit var adapter: TimeAdapter
 
@@ -39,6 +39,7 @@ class SettingsFragment : Fragment(), SettingsView {
 
     override fun onStart() {
         super.onStart()
+        presenter = SettingsPresenter(this)
         presenter.attach()
         initButtons()
         timeRecyclerView = requireActivity().findViewById(R.id.time_recycler_view)

@@ -1,23 +1,24 @@
 package com.itmofitip.chesstimer.view.fragment
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.presenter.TimerPresenter
 import com.itmofitip.chesstimer.utilities.animateVisibilityToGone
 import com.itmofitip.chesstimer.utilities.animateVisibilityToInvisible
 import com.itmofitip.chesstimer.utilities.animateVisibilityToVisible
+import com.itmofitip.chesstimer.utilities.replaceFragment
 import com.itmofitip.chesstimer.view.CircularProgressBar
 import com.itmofitip.chesstimer.view.TimerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import com.itmofitip.chesstimer.utilities.replaceFragment
 
 const val LONG_LENGTH_TEXT_SIZE = 52
 const val SHORT_LENGTH_TEXT_SIZE = 72
@@ -26,7 +27,7 @@ const val SHORT_LENGTH_TEXT_SIZE = 72
 @ExperimentalCoroutinesApi
 class TimerFragment : Fragment(), TimerView {
 
-    private val presenter = TimerPresenter(this)
+    private lateinit var presenter: TimerPresenter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +35,11 @@ class TimerFragment : Fragment(), TimerView {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_timer, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter = TimerPresenter(this)
     }
 
     override fun onResume() {
@@ -129,8 +135,8 @@ class TimerFragment : Fragment(), TimerView {
     override fun onActiveState() {
         with(requireActivity()) {
             findViewById<ImageView>(R.id.tap_to_start).animateVisibilityToInvisible()
-            findViewById<ImageView>(R.id.settings_button).animateVisibilityToInvisible()
-            findViewById<ImageView>(R.id.restart_button).animateVisibilityToInvisible()
+            findViewById<ImageView>(R.id.settings_button).animateVisibilityToGone()
+            findViewById<ImageView>(R.id.restart_button).animateVisibilityToGone()
             findViewById<ImageView>(R.id.continue_button).animateVisibilityToGone()
             findViewById<ImageView>(R.id.pause_button).animateVisibilityToVisible()
         }
@@ -141,9 +147,7 @@ class TimerFragment : Fragment(), TimerView {
             requireActivity().resources.getColor(R.color.few_time)
         )
         requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first)
-            .setBackgroundColor(
-                requireActivity().resources.getColor(R.color.white)
-            )
+            .setBackgroundColor(getSecondaryColor())
         requireActivity().findViewById<TextView>(R.id.time_ms_first).visibility = View.GONE
     }
 
@@ -152,9 +156,7 @@ class TimerFragment : Fragment(), TimerView {
             requireActivity().resources.getColor(R.color.few_time)
         )
         requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second)
-            .setBackgroundColor(
-                requireActivity().resources.getColor(R.color.white)
-            )
+            .setBackgroundColor(getSecondaryColor())
         requireActivity().findViewById<TextView>(R.id.time_ms_second).visibility = View.GONE
     }
 
@@ -177,9 +179,7 @@ class TimerFragment : Fragment(), TimerView {
             requireActivity().resources.getColor(R.color.main_blue)
         )
         requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first)
-            .setBackgroundColor(
-                requireActivity().resources.getColor(R.color.white)
-            )
+            .setBackgroundColor(getSecondaryColor())
         requireActivity().findViewById<TextView>(R.id.time_ms_first).visibility = View.GONE
     }
 
@@ -188,17 +188,19 @@ class TimerFragment : Fragment(), TimerView {
             requireActivity().resources.getColor(R.color.main_blue)
         )
         requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second)
-            .setBackgroundColor(
-                requireActivity().resources.getColor(R.color.white)
-            )
+            .setBackgroundColor(getSecondaryColor())
         requireActivity().findViewById<TextView>(R.id.time_ms_second).visibility = View.GONE
     }
 
     override fun onFirstNeedMs() {
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first)
+            .setBackgroundColor(getSecondaryColor())
         requireActivity().findViewById<TextView>(R.id.time_ms_first).visibility = View.VISIBLE
     }
 
     override fun onSecondNeedMs() {
+        requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second)
+            .setBackgroundColor(getSecondaryColor())
         requireActivity().findViewById<TextView>(R.id.time_ms_second).visibility = View.VISIBLE
     }
 
@@ -228,5 +230,11 @@ class TimerFragment : Fragment(), TimerView {
     override fun onSecondLongTimeStr() {
         requireActivity().findViewById<TextView>(R.id.time_second).textSize =
             LONG_LENGTH_TEXT_SIZE.toFloat()
+    }
+
+    private fun getSecondaryColor(): Int {
+        return TypedValue().apply {
+            context?.theme?.resolveAttribute(R.attr.colorSecondary, this, true)
+        }.data
     }
 }

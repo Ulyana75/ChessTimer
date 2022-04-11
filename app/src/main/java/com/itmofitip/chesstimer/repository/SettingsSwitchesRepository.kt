@@ -4,6 +4,8 @@ import android.content.Context
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -14,15 +16,15 @@ class SettingsSwitchesRepository : WorkerWithSavedData {
         private set
     var isVibrationChecked = false
         private set
-    var isDarkThemeChecked = false
-        private set
+    private val _isDarkThemeChecked = MutableStateFlow(false)
+    val isDarkThemeChecked: StateFlow<Boolean> get() = _isDarkThemeChecked
 
     override fun initData() {
         with(APP_ACTIVITY.getPreferences(Context.MODE_PRIVATE)) {
             isSoundOnClickChecked = getBoolean(KEY_TIMER_SOUND, true)
             isSoundOnLowTimeChecked = getBoolean(KEY_LOW_TIME_SOUND, true)
             isVibrationChecked = getBoolean(KEY_VIBRATION, false)
-            isDarkThemeChecked = getBoolean(KEY_DARK_THEME, false)
+            _isDarkThemeChecked.value = getBoolean(KEY_DARK_THEME, false)
         }
     }
 
@@ -31,7 +33,7 @@ class SettingsSwitchesRepository : WorkerWithSavedData {
             putBoolean(KEY_TIMER_SOUND, isSoundOnClickChecked)
             putBoolean(KEY_LOW_TIME_SOUND, isSoundOnLowTimeChecked)
             putBoolean(KEY_VIBRATION, isVibrationChecked)
-            putBoolean(KEY_DARK_THEME, isDarkThemeChecked)
+            putBoolean(KEY_DARK_THEME, _isDarkThemeChecked.value)
         }.apply()
     }
 
@@ -40,7 +42,7 @@ class SettingsSwitchesRepository : WorkerWithSavedData {
             SwitchType.SOUND_ON_CLICK -> isSoundOnClickChecked = isChecked
             SwitchType.SOUND_ON_LOW_TIME -> isSoundOnLowTimeChecked = isChecked
             SwitchType.VIBRATION -> isVibrationChecked = isChecked
-            SwitchType.DARK_THEME -> isDarkThemeChecked = isChecked
+            SwitchType.DARK_THEME -> _isDarkThemeChecked.value = isChecked
         }
     }
 
