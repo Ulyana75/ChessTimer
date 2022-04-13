@@ -27,13 +27,40 @@ class AddTimeFragment : Fragment(), AddTimeView {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_time, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_time, container, false)
+        initPickers(view, savedInstanceState)
+        return view
     }
 
     override fun onStart() {
         super.onStart()
-        initPickers()
         initButtons()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        with(requireActivity()) {
+            outState.putInt(
+                KEY_GAME_HOURS,
+                findViewById<NumberPicker>(R.id.game_time_hours_picker).value
+            )
+            outState.putInt(
+                KEY_GAME_MINUTES,
+                findViewById<NumberPicker>(R.id.game_time_minutes_picker).value
+            )
+            outState.putInt(
+                KEY_GAME_SECONDS,
+                findViewById<NumberPicker>(R.id.game_time_seconds_picker).value
+            )
+            outState.putInt(
+                KEY_INCREMENT_MINUTES,
+                findViewById<NumberPicker>(R.id.increment_minutes_picker).value
+            )
+            outState.putInt(
+                KEY_INCREMENT_SECONDS,
+                findViewById<NumberPicker>(R.id.increment_seconds_picker).value
+            )
+        }
     }
 
     override fun onSaveButtonClicked() {
@@ -67,8 +94,8 @@ class AddTimeFragment : Fragment(), AddTimeView {
         }
     }
 
-    private fun initPickers() {
-        with(requireActivity()) {
+    private fun initPickers(view: View, savedInstanceState: Bundle?) {
+        with(view) {
             with(findViewById<NumberPicker>(R.id.game_time_hours_picker)) {
                 minValue = 0
                 maxValue = 99
@@ -89,6 +116,27 @@ class AddTimeFragment : Fragment(), AddTimeView {
                 minValue = 0
                 maxValue = 59
             }
+
+            if (savedInstanceState != null) {
+                findViewById<NumberPicker>(R.id.game_time_hours_picker).value =
+                    savedInstanceState.getInt(KEY_GAME_HOURS)
+                findViewById<NumberPicker>(R.id.game_time_minutes_picker).value =
+                    savedInstanceState.getInt(KEY_GAME_MINUTES)
+                findViewById<NumberPicker>(R.id.game_time_seconds_picker).value =
+                    savedInstanceState.getInt(KEY_GAME_SECONDS)
+                findViewById<NumberPicker>(R.id.increment_minutes_picker).value =
+                    savedInstanceState.getInt(KEY_INCREMENT_MINUTES)
+                findViewById<NumberPicker>(R.id.increment_seconds_picker).value =
+                    savedInstanceState.getInt(KEY_INCREMENT_SECONDS)
+            }
         }
+    }
+
+    companion object {
+        private const val KEY_GAME_HOURS = "game_hours"
+        private const val KEY_GAME_MINUTES = "game_minutes"
+        private const val KEY_GAME_SECONDS = "game_seconds"
+        private const val KEY_INCREMENT_MINUTES = "increment_minutes"
+        private const val KEY_INCREMENT_SECONDS = "increment_seconds"
     }
 }

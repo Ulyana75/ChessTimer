@@ -9,7 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     
     <color name="main_blue">#7EC1C8</color>
+    <color name="main_blue_transparent">#9A7EC1C8</color>
     <color name="black_transparent">#66000000</color>
+    <color name="black_transparent_dark">#99000000</color>
     <color name="few_time">#C88B7E</color>
     <color name="dark_white">#C1C1C1</color>
     <color name="transparent_white">#1AFFFFFF</color>

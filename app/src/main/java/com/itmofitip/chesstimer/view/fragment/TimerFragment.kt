@@ -193,12 +193,14 @@ class TimerFragment : Fragment(), TimerView {
     }
 
     override fun onFirstNeedMs() {
+        onFirstFewTime()
         requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_first)
             .setBackgroundColor(getSecondaryColor())
         requireActivity().findViewById<TextView>(R.id.time_ms_first).visibility = View.VISIBLE
     }
 
     override fun onSecondNeedMs() {
+        onSecondFewTime()
         requireActivity().findViewById<ConstraintLayout>(R.id.button_timer_second)
             .setBackgroundColor(getSecondaryColor())
         requireActivity().findViewById<TextView>(R.id.time_ms_second).visibility = View.VISIBLE

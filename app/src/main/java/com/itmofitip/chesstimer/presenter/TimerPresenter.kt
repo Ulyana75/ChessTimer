@@ -6,26 +6,17 @@ import com.itmofitip.chesstimer.repository.PauseState
 import com.itmofitip.chesstimer.repository.TimeQuantityState
 import com.itmofitip.chesstimer.repository.Turn
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
+import com.itmofitip.chesstimer.utilities.getNormalizedMs
 import com.itmofitip.chesstimer.utilities.getNormalizedTime
 import com.itmofitip.chesstimer.view.TimerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import java.util.concurrent.TimeUnit
 
 val FEW_TIME_MILLIS = TimeUnit.SECONDS.toMillis(30)
 val NEED_MS_TIME_MILLIS = TimeUnit.SECONDS.toMillis(20)
 const val LONG_TIME_MINIMAL_LENGTH = 8
+const val MILLIS_DELAY = 20L
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -132,10 +123,13 @@ class TimerPresenter(private val view: TimerView) {
             timeRepository.firstMillisLeft.collect {
                 view.setFirstProgress(it.toFloat() / timeRepository.startMillis * 100)
                 when {
-                    it <= 0 -> timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.FINISHED)
+                    it <= 0 -> {
+                        timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.FINISHED)
+                        view.setFirstMs(":000")
+                    }
                     it < NEED_MS_TIME_MILLIS -> {
                         timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.NEED_MS)
-                        view.setFirstMs("${it % 1000}ms")
+                        view.setFirstMs(":${it.getNormalizedMs()}")
                     }
                     it < FEW_TIME_MILLIS -> timeQuantityRepository.setFirstTimeQuantityState(
                         TimeQuantityState.FEW
@@ -148,10 +142,13 @@ class TimerPresenter(private val view: TimerView) {
             timeRepository.secondMillisLeft.collect {
                 view.setSecondProgress(it.toFloat() / timeRepository.startMillis * 100)
                 when {
-                    it <= 0 -> timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.FINISHED)
+                    it <= 0 -> {
+                        timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.FINISHED)
+                        view.setSecondMs(":000")
+                    }
                     it < NEED_MS_TIME_MILLIS -> {
                         timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.NEED_MS)
-                        view.setSecondMs("${it % 1000}ms")
+                        view.setSecondMs(":${it.getNormalizedMs()}")
                     }
                     it < FEW_TIME_MILLIS -> timeQuantityRepository.setSecondTimeQuantityState(
                         TimeQuantityState.FEW
@@ -260,8 +257,8 @@ class TimerPresenter(private val view: TimerView) {
             when (turn) {
                 Turn.FIRST -> return@flatMapLatest flow {
                     while (true) {
-                        delay(10)
-                        timeRepository.decrementFirstTime(10)
+                        delay(MILLIS_DELAY)
+                        timeRepository.decrementFirstTime(MILLIS_DELAY)
                         emit(getNormalizedTime(timeRepository.firstMillisLeft.value))
                     }
                 }.flowOn(Dispatchers.IO)
@@ -279,8 +276,8 @@ class TimerPresenter(private val view: TimerView) {
             when (turn) {
                 Turn.SECOND -> return@flatMapLatest flow {
                     while (true) {
-                        delay(10)
-                        timeRepository.decrementSecondTime(10)
+                        delay(MILLIS_DELAY)
+                        timeRepository.decrementSecondTime(MILLIS_DELAY)
                         emit(getNormalizedTime(timeRepository.secondMillisLeft.value))
                     }
                 }.flowOn(Dispatchers.IO)

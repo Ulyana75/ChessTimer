@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.PopupMenu
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.itmofitip.chesstimer.R
@@ -34,7 +36,9 @@ class SettingsFragment : Fragment(), SettingsView {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+        val view = inflater.inflate(R.layout.fragment_settings, container, false)
+        view.findViewById<NestedScrollView>(R.id.scroll_view)?.fullScroll(ScrollView.FOCUS_UP)
+        return view
     }
 
     override fun onStart() {

@@ -60,4 +60,9 @@ class TimeRepository : WorkerWithSavedData {
     override fun saveData() {
         lastChosenTimeRepository.saveData()
     }
+
+    fun setMillisLeft(first: Long, second: Long) {
+        _firstMillisLeft.value = first
+        _secondMillisLeft.value = second
+    }
 }

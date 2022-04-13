@@ -9,6 +9,7 @@ import com.itmofitip.chesstimer.repository.*
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
 import com.itmofitip.chesstimer.utilities.SavedDataInitializer
 import com.itmofitip.chesstimer.utilities.replaceFragment
+import com.itmofitip.chesstimer.view.fragment.StartFragment
 import com.itmofitip.chesstimer.view.fragment.TimerFragment
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     private var themeChangesJob: Job? = null
+    var needStartScreen = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +50,55 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         supportActionBar?.hide()
         themeChangesJob = collectThemeChanges()
-        if (supportFragmentManager.backStackEntryCount == 0) {
-            replaceFragment(TimerFragment(), false)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        timeRepository.setMillisLeft(
+            savedInstanceState.getLong(KEY_FIRST_MILLIS_LEFT),
+            savedInstanceState.getLong(KEY_SECOND_MILLIS_LEFT)
+        )
+        savedInstanceState.getString(KEY_PAUSE_STATE)?.let {
+            pauseRepository.setPauseState(PauseState.valueOf(it))
         }
+        savedInstanceState.getString(KEY_TURN)?.let {
+            turnRepository.setTurn(Turn.valueOf(it))
+        }
+        needStartScreen = savedInstanceState.getBoolean(KEY_NEED_START_SCREEN)
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            if (needStartScreen) {
+                replaceFragment(StartFragment(), false)
+            }
+            else {
+                replaceFragment(TimerFragment(), false)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (supportFragmentManager.backStackEntryCount == 0) {
+            if (needStartScreen) {
+                replaceFragment(StartFragment(), false)
+            }
+            else {
+                replaceFragment(TimerFragment(), false)
+            }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putLong(KEY_FIRST_MILLIS_LEFT, timeRepository.firstMillisLeft.value)
+        outState.putLong(KEY_SECOND_MILLIS_LEFT, timeRepository.secondMillisLeft.value)
+        outState.putString(
+            KEY_PAUSE_STATE,
+            if (pauseRepository.pauseState.value != PauseState.ACTIVE)
+                pauseRepository.pauseState.value.toString()
+            else PauseState.PAUSE.toString()
+        )
+        outState.putString(KEY_TURN, turnRepository.turn.value.toString())
+        outState.putBoolean(KEY_NEED_START_SCREEN, needStartScreen)
     }
 
     override fun onStop() {
@@ -62,12 +110,21 @@ class MainActivity : AppCompatActivity() {
     private fun collectThemeChanges(): Job {
         return CoroutineScope(Dispatchers.Main).launch {
             settingsSwitchesRepository.isDarkThemeChecked.collect {
+                val scrollY = findViewById<NestedScrollView>(R.id.scroll_view)?.scrollY
                 when (it) {
                     true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
-                findViewById<NestedScrollView>(R.id.scroll_view)?.fullScroll(ScrollView.FOCUS_DOWN)
+                findViewById<NestedScrollView>(R.id.scroll_view)?.scrollTo(0, scrollY ?: 0)
             }
         }
+    }
+
+    companion object {
+        private const val KEY_FIRST_MILLIS_LEFT = "first_millis_left"
+        private const val KEY_SECOND_MILLIS_LEFT = "second_millis_left"
+        private const val KEY_TURN = "turn"
+        private const val KEY_PAUSE_STATE = "pause_state"
+        private const val KEY_NEED_START_SCREEN = "need_start_screen"
     }
 }

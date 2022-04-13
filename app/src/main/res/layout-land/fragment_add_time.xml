@@ -7,6 +7,13 @@
     tools:context=".view.fragment.AddTimeFragment"
     android:background="?attr/colorSecondary">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5"/>
+
     <ImageView
         android:id="@+id/return_button_2"
         android:layout_width="65dp"
@@ -22,10 +29,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/game_time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/return_button_2"
-        app:layout_constraintBottom_toTopOf="@+id/increment">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_2">
 
         <TextView
             android:id="@+id/game_time_title"
@@ -110,10 +119,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/increment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/game_time"
-        app:layout_constraintBottom_toTopOf="@+id/save_time_button">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/return_button_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline_2"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/increment_title"
@@ -181,12 +192,12 @@
         android:layout_height="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/return_button_2"
+        app:layout_constraintBottom_toBottomOf="@id/return_button_2"
         style="@style/base_text_light"
         android:text="@string/save_button_text"
         android:textSize="24sp"
         android:background="@drawable/border_for_time_element"
-        android:textAlignment="center"
-        android:layout_marginBottom="40dp"/>
+        android:textAlignment="center"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

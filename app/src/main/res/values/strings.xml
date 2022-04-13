@@ -16,4 +16,5 @@
     <string name="save_button_text">Save</string>
     <string name="on_wrong_time_entered">Time can\'t be a zero!</string>
     <string name="delete_menu_text">Delete</string>
+    <string name="start">Start</string>
 </resources>

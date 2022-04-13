@@ -72,9 +72,9 @@ class CircularProgressBar(context: Context, attrs: AttributeSet) : View(context,
         setMeasuredDimension(min, min)
         rectF.set(
             0 + strokeWidth / 2 + (width - min) / 2,
-            0 + strokeWidth / 2,
+            0 + strokeWidth / 2 + (height - min) / 2,
             min - strokeWidth / 2 + (width - min) / 2,
-            min - strokeWidth / 2
+            min - strokeWidth / 2 + (height - min) / 2
         )
     }
 
