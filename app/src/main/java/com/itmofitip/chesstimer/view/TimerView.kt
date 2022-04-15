@@ -30,4 +30,6 @@ interface TimerView {
     fun onSecondShortTimeStr()
     fun onFirstLongTimeStr()
     fun onSecondLongTimeStr()
+
+    fun onTimeOverflow()
 }

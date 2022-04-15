@@ -4,6 +4,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.TimeUnit
+
+private val HOURS_100 = TimeUnit.HOURS.toMillis(100)
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -22,12 +25,20 @@ class TimeRepository : WorkerWithSavedData {
     val secondMillisLeft: StateFlow<Long> get() = _secondMillisLeft
 
 
-    fun incrementFirstTime() {
+    fun incrementFirstTime(): Boolean {
+        if (_firstMillisLeft.value + increment >= HOURS_100) {
+            return false
+        }
         _firstMillisLeft.value += increment
+        return true
     }
 
-    fun incrementSecondTime() {
+    fun incrementSecondTime(): Boolean {
+        if (_secondMillisLeft.value + increment >= HOURS_100) {
+            return false
+        }
         _secondMillisLeft.value += increment
+        return true
     }
 
     fun decrementFirstTime(decrement: Long) {

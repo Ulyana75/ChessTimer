@@ -73,7 +73,9 @@ class TimerPresenter(private val view: TimerView) {
             if (turnRepository.turn.value == Turn.FIRST) {
                 makeSound()
                 if (pauseRepository.pauseState.value != PauseState.NOT_STARTED) {
-                    timeRepository.incrementFirstTime()
+                    if (!timeRepository.incrementFirstTime()) {
+                        view.onTimeOverflow()
+                    }
                 }
             }
             startTimer()
@@ -86,7 +88,9 @@ class TimerPresenter(private val view: TimerView) {
             if (turnRepository.turn.value == Turn.SECOND) {
                 makeSound()
                 if (pauseRepository.pauseState.value != PauseState.NOT_STARTED) {
-                    timeRepository.incrementSecondTime()
+                    if (!timeRepository.incrementSecondTime()) {
+                        view.onTimeOverflow()
+                    }
                 }
             }
             startTimer()

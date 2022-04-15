@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.itmofitip.chesstimer.R
@@ -232,6 +233,16 @@ class TimerFragment : Fragment(), TimerView {
     override fun onSecondLongTimeStr() {
         requireActivity().findViewById<TextView>(R.id.time_second).textSize =
             LONG_LENGTH_TEXT_SIZE.toFloat()
+    }
+
+    override fun onTimeOverflow() {
+        with(requireContext()) {
+            Toast.makeText(
+                this,
+                resources.getString(R.string.on_time_overflow),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun getSecondaryColor(): Int {

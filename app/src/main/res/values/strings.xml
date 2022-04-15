@@ -17,4 +17,5 @@
     <string name="on_wrong_time_entered">Time can\'t be a zero!</string>
     <string name="delete_menu_text">Delete</string>
     <string name="start">Start</string>
+    <string name="on_time_overflow">Sorry, time can\'t be more than 100 hours\nAre you sure you need so much?</string>
 </resources>
