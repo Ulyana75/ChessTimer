@@ -22,4 +22,9 @@ class MovesCountRepository {
         _movesCountFirst.value = valueFirst
         _movesCountSecond.value = valueSecond
     }
+
+    fun reset() {
+        _movesCountFirst.value = 0
+        _movesCountSecond.value = 0
+    }
 }

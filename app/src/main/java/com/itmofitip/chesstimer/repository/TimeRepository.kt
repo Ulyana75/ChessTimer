@@ -42,11 +42,11 @@ class TimeRepository : WorkerWithSavedData {
     }
 
     fun decrementFirstTime(decrement: Long) {
-        _firstMillisLeft.value -= decrement
+        _firstMillisLeft.value = (_firstMillisLeft.value - decrement).coerceAtLeast(0)
     }
 
     fun decrementSecondTime(decrement: Long) {
-        _secondMillisLeft.value -= decrement
+        _secondMillisLeft.value = (_secondMillisLeft.value - decrement).coerceAtLeast(0)
     }
 
     fun resetTime() {

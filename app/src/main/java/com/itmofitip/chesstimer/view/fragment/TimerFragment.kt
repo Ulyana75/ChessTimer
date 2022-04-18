@@ -208,11 +208,17 @@ class TimerFragment : Fragment(), TimerView {
     }
 
     override fun setFirstMs(ms: String) {
-        requireActivity().findViewById<TextView>(R.id.time_ms_first).text = ms
+        with(requireActivity().findViewById<TextView>(R.id.time_ms_first)) {
+            visibility = View.VISIBLE
+            text = ms
+        }
     }
 
     override fun setSecondMs(ms: String) {
-        requireActivity().findViewById<TextView>(R.id.time_ms_second).text = ms
+        with(requireActivity().findViewById<TextView>(R.id.time_ms_second)) {
+            visibility = View.VISIBLE
+            text = ms
+        }
     }
 
     override fun onFirstShortTimeStr() {

@@ -1,15 +1,12 @@
 package com.itmofitip.chesstimer.presenter
 
-import android.util.Log
-import androidx.appcompat.app.AppCompatDelegate
-import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.repository.PauseState
 import com.itmofitip.chesstimer.repository.SwitchType
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
 import com.itmofitip.chesstimer.utilities.TimeItem
 import com.itmofitip.chesstimer.view.SettingsView
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import java.util.concurrent.TimeUnit
 
 @FlowPreview
@@ -54,7 +51,7 @@ class SettingsPresenter(private val view: SettingsView) {
         with(settingsSwitchesRepository) {
             view.setSwitchIsChecked(SwitchType.SOUND_ON_CLICK, isSoundOnClickChecked)
             view.setSwitchIsChecked(SwitchType.SOUND_ON_LOW_TIME, isSoundOnLowTimeChecked)
-            view.setSwitchIsChecked(SwitchType.VIBRATION, isVibrationChecked)
+            view.setSwitchIsChecked(SwitchType.SOUND_ON_FINISH, isSoundOnFinishChecked)
             view.setSwitchIsChecked(SwitchType.DARK_THEME, isDarkThemeChecked.value)
         }
     }

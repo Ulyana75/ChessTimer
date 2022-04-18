@@ -132,23 +132,23 @@
             android:checked="true"/>
 
         <TextView
-            android:id="@+id/vibration"
+            android:id="@+id/sound_on_finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/sound_on_low_time"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="4dp"
             style="@style/base_text_light"
-            android:text="@string/vibration_title"
+            android:text="@string/sound_on_finish"
             android:textSize="24sp"
             android:layout_marginStart="36dp"/>
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch_vibration"
+            android:id="@+id/switch_sound_on_finish"
             android:layout_width="57dp"
             android:layout_height="29dp"
-            app:layout_constraintBottom_toBottomOf="@id/vibration"
-            app:layout_constraintTop_toTopOf="@+id/vibration"
+            app:layout_constraintBottom_toBottomOf="@id/sound_on_finish"
+            app:layout_constraintTop_toTopOf="@+id/sound_on_finish"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="52dp"
             android:thumb="@drawable/custom_thumb"
@@ -161,7 +161,7 @@
             android:text="@string/settings_header_theme"
             style="@style/base_text_light"
             android:textSize="36sp"
-            app:layout_constraintTop_toBottomOf="@+id/vibration"
+            app:layout_constraintTop_toBottomOf="@+id/sound_on_finish"
             android:layout_marginTop="35dp"
             android:layout_marginStart="36dp"/>
 

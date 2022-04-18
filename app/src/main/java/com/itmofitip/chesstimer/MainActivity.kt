@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     val timeRepository = TimeRepository()
     val timeQuantityRepository = TimeQuantityRepository()
     val movesCountRepository = MovesCountRepository()
+    val soundWasPlayedRepository = SoundWasPlayedRepository()
 
     val settingsTimeRepository = SettingsTimeRepository()
     val settingsSwitchesRepository = SettingsSwitchesRepository()
@@ -55,9 +56,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
+        val firstMillisLeft = savedInstanceState.getLong(KEY_FIRST_MILLIS_LEFT)
+        val secondMillisLeft = savedInstanceState.getLong(KEY_SECOND_MILLIS_LEFT)
+        if (firstMillisLeft == 0L || secondMillisLeft == 0L) {
+            soundWasPlayedRepository.soundOnFinishWasPlayed = true
+        }
         timeRepository.setMillisLeft(
-            savedInstanceState.getLong(KEY_FIRST_MILLIS_LEFT),
-            savedInstanceState.getLong(KEY_SECOND_MILLIS_LEFT)
+            firstMillisLeft,
+            secondMillisLeft
         )
         movesCountRepository.setMovesCounts(
             savedInstanceState.getInt(KEY_MOVES_FIRST),

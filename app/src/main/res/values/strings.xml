@@ -2,7 +2,7 @@
     <string name="app_name">ChessTimer</string>
     <string name="settings_header_time">Time</string>
     <string name="settings_add_time">+</string>
-    <string name="settings_header_sound"><![CDATA[Sound&Vibration]]></string>
+    <string name="settings_header_sound">Sounds</string>
     <string name="click_sound_title">Sound on click</string>
     <string name="vibration_title">Vibration</string>
     <string name="settings_header_theme">Theme</string>
@@ -18,4 +18,5 @@
     <string name="delete_menu_text">Delete</string>
     <string name="start">Start</string>
     <string name="on_time_overflow">Sorry, time can\'t be more than 100 hours\nAre you sure you need so much?</string>
+    <string name="sound_on_finish">Sound on finish</string>
 </resources>

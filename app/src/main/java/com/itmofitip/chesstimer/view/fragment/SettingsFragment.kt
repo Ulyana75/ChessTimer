@@ -72,8 +72,8 @@ class SettingsFragment : Fragment(), SettingsView {
                     findViewById<SwitchCompat>(R.id.switch_sound_on_click).isChecked = isChecked
                 SwitchType.SOUND_ON_LOW_TIME ->
                     findViewById<SwitchCompat>(R.id.switch_sound_low_time).isChecked = isChecked
-                SwitchType.VIBRATION ->
-                    findViewById<SwitchCompat>(R.id.switch_vibration).isChecked = isChecked
+                SwitchType.SOUND_ON_FINISH ->
+                    findViewById<SwitchCompat>(R.id.switch_sound_on_finish).isChecked = isChecked
                 SwitchType.DARK_THEME ->
                     findViewById<SwitchCompat>(R.id.switch_dark_theme).isChecked = isChecked
             }
@@ -91,8 +91,8 @@ class SettingsFragment : Fragment(), SettingsView {
             findViewById<SwitchCompat>(R.id.switch_sound_low_time).setOnCheckedChangeListener { _, isChecked ->
                 presenter.onSwitchCheckedChange(SwitchType.SOUND_ON_LOW_TIME, isChecked)
             }
-            findViewById<SwitchCompat>(R.id.switch_vibration).setOnCheckedChangeListener { _, isChecked ->
-                presenter.onSwitchCheckedChange(SwitchType.VIBRATION, isChecked)
+            findViewById<SwitchCompat>(R.id.switch_sound_on_finish).setOnCheckedChangeListener { _, isChecked ->
+                presenter.onSwitchCheckedChange(SwitchType.SOUND_ON_FINISH, isChecked)
             }
             findViewById<SwitchCompat>(R.id.switch_dark_theme).setOnCheckedChangeListener { _, isChecked ->
                 presenter.onSwitchCheckedChange(SwitchType.DARK_THEME, isChecked)
