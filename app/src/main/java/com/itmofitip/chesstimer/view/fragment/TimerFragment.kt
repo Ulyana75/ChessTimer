@@ -245,6 +245,14 @@ class TimerFragment : Fragment(), TimerView {
         }
     }
 
+    override fun setMovesCountFirst(movesCount: String) {
+        requireActivity().findViewById<TextView>(R.id.moves_count_first).text = movesCount
+    }
+
+    override fun setMovesCountSecond(movesCount: String) {
+        requireActivity().findViewById<TextView>(R.id.moves_count_second).text = movesCount
+    }
+
     private fun getSecondaryColor(): Int {
         return TypedValue().apply {
             context?.theme?.resolveAttribute(R.attr.colorSecondary, this, true)

@@ -25,6 +25,7 @@ class TimerPresenter(private val view: TimerView) {
     private val turnRepository = APP_ACTIVITY.turnRepository
     private val pauseRepository = APP_ACTIVITY.pauseRepository
     private val timeRepository = APP_ACTIVITY.timeRepository
+    private val movesCountRepository = APP_ACTIVITY.movesCountRepository
     private val timeQuantityRepository = APP_ACTIVITY.timeQuantityRepository
     private val settingsSwitchesRepository = APP_ACTIVITY.settingsSwitchesRepository
     private var firstJob: Job? = null
@@ -39,6 +40,7 @@ class TimerPresenter(private val view: TimerView) {
         observePauseState()
         observeTimeQuantityState()
         observeMillisLeft()
+        observeMovesCount()
     }
 
     fun detach() {
@@ -76,6 +78,7 @@ class TimerPresenter(private val view: TimerView) {
                     if (!timeRepository.incrementFirstTime()) {
                         view.onTimeOverflow()
                     }
+                    movesCountRepository.incrementFirst()
                 }
             }
             startTimer()
@@ -91,6 +94,7 @@ class TimerPresenter(private val view: TimerView) {
                     if (!timeRepository.incrementSecondTime()) {
                         view.onTimeOverflow()
                     }
+                    movesCountRepository.incrementSecond()
                 }
             }
             startTimer()
@@ -101,6 +105,16 @@ class TimerPresenter(private val view: TimerView) {
     private fun makeSound() {
         if (settingsSwitchesRepository.isSoundOnClickChecked) {
             val mp = MediaPlayer.create(APP_ACTIVITY, R.raw.timer_tap)
+            mp.setOnCompletionListener {
+                mp.release()
+            }
+            mp.start()
+        }
+    }
+
+    private fun makeSoundLowTime() {
+        if (settingsSwitchesRepository.isSoundOnLowTimeChecked) {
+            val mp = MediaPlayer.create(APP_ACTIVITY, R.raw.low_time)
             mp.setOnCompletionListener {
                 mp.release()
             }
@@ -161,6 +175,23 @@ class TimerPresenter(private val view: TimerView) {
                 }
             }
         })
+    }
+
+    private fun observeMovesCount() {
+        activeJobs.add(
+            CoroutineScope(Dispatchers.Main).launch {
+                movesCountRepository.movesCountFirst.collect {
+                    view.setMovesCountFirst(it.toString())
+                }
+            }
+        )
+        activeJobs.add(
+            CoroutineScope(Dispatchers.Main).launch {
+                movesCountRepository.movesCountSecond.collect {
+                    view.setMovesCountSecond(it.toString())
+                }
+            }
+        )
     }
 
     private fun observeTimeQuantityState() {

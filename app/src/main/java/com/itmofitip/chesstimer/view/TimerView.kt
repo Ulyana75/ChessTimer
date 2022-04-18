@@ -32,4 +32,7 @@ interface TimerView {
     fun onSecondLongTimeStr()
 
     fun onTimeOverflow()
+
+    fun setMovesCountFirst(movesCount: String)
+    fun setMovesCountSecond(movesCount: String)
 }

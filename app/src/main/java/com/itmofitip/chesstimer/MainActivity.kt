@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     val pauseRepository = PauseRepository()
     val timeRepository = TimeRepository()
     val timeQuantityRepository = TimeQuantityRepository()
+    val movesCountRepository = MovesCountRepository()
 
     val settingsTimeRepository = SettingsTimeRepository()
     val settingsSwitchesRepository = SettingsSwitchesRepository()
@@ -58,6 +59,10 @@ class MainActivity : AppCompatActivity() {
             savedInstanceState.getLong(KEY_FIRST_MILLIS_LEFT),
             savedInstanceState.getLong(KEY_SECOND_MILLIS_LEFT)
         )
+        movesCountRepository.setMovesCounts(
+            savedInstanceState.getInt(KEY_MOVES_FIRST),
+            savedInstanceState.getInt(KEY_MOVES_SECOND)
+        )
         savedInstanceState.getString(KEY_PAUSE_STATE)?.let {
             pauseRepository.setPauseState(PauseState.valueOf(it))
         }
@@ -91,6 +96,8 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putLong(KEY_FIRST_MILLIS_LEFT, timeRepository.firstMillisLeft.value)
         outState.putLong(KEY_SECOND_MILLIS_LEFT, timeRepository.secondMillisLeft.value)
+        outState.putInt(KEY_MOVES_FIRST, movesCountRepository.movesCountFirst.value)
+        outState.putInt(KEY_MOVES_SECOND, movesCountRepository.movesCountSecond.value)
         outState.putString(
             KEY_PAUSE_STATE,
             if (pauseRepository.pauseState.value != PauseState.ACTIVE)
@@ -123,6 +130,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val KEY_FIRST_MILLIS_LEFT = "first_millis_left"
         private const val KEY_SECOND_MILLIS_LEFT = "second_millis_left"
+        private const val KEY_MOVES_FIRST = "moves_first"
+        private const val KEY_MOVES_SECOND = "moves_second"
         private const val KEY_TURN = "turn"
         private const val KEY_PAUSE_STATE = "pause_state"
         private const val KEY_NEED_START_SCREEN = "need_start_screen"
