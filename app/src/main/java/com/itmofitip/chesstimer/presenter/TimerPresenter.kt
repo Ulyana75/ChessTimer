@@ -1,6 +1,10 @@
 package com.itmofitip.chesstimer.presenter
 
+import android.content.Context
 import android.media.MediaPlayer
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.repository.PauseState
 import com.itmofitip.chesstimer.repository.TimeQuantityState
@@ -15,6 +19,7 @@ import java.util.concurrent.TimeUnit
 
 val FEW_TIME_MILLIS = TimeUnit.SECONDS.toMillis(30)
 val NEED_MS_TIME_MILLIS = TimeUnit.SECONDS.toMillis(20)
+val SOUND_LOW_TIME_MILLIS = TimeUnit.SECONDS.toMillis(10)
 const val LONG_TIME_MINIMAL_LENGTH = 8
 const val MILLIS_DELAY = 20L
 
@@ -28,6 +33,7 @@ class TimerPresenter(private val view: TimerView) {
     private val movesCountRepository = APP_ACTIVITY.movesCountRepository
     private val timeQuantityRepository = APP_ACTIVITY.timeQuantityRepository
     private val settingsSwitchesRepository = APP_ACTIVITY.settingsSwitchesRepository
+    private val vibrator = APP_ACTIVITY.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     private var firstJob: Job? = null
     private var secondJob: Job? = null
     private var turnForInactiveJob: Job? = null
@@ -103,6 +109,7 @@ class TimerPresenter(private val view: TimerView) {
     }
 
     private fun makeSound() {
+        makeVibration()
         if (settingsSwitchesRepository.isSoundOnClickChecked) {
             val mp = MediaPlayer.create(APP_ACTIVITY, R.raw.timer_tap)
             mp.setOnCompletionListener {
@@ -119,6 +126,21 @@ class TimerPresenter(private val view: TimerView) {
                 mp.release()
             }
             mp.start()
+        }
+    }
+
+    private fun makeVibration() {
+        if (settingsSwitchesRepository.isVibrationChecked) {
+            if (Build.VERSION.SDK_INT >= 26) {
+                vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                        80,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+                )
+            } else {
+                vibrator.vibrate(80)
+            }
         }
     }
 
@@ -140,6 +162,9 @@ class TimerPresenter(private val view: TimerView) {
         activeJobs.add(CoroutineScope(Dispatchers.Main).launch {
             timeRepository.firstMillisLeft.collect {
                 view.setFirstProgress(it.toFloat() / timeRepository.startMillis * 100)
+                if (it == SOUND_LOW_TIME_MILLIS) {
+                    makeSoundLowTime()
+                }
                 when {
                     it <= 0 -> {
                         timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.FINISHED)
@@ -159,6 +184,9 @@ class TimerPresenter(private val view: TimerView) {
         activeJobs.add(CoroutineScope(Dispatchers.Main).launch {
             timeRepository.secondMillisLeft.collect {
                 view.setSecondProgress(it.toFloat() / timeRepository.startMillis * 100)
+                if (it == SOUND_LOW_TIME_MILLIS) {
+                    makeSoundLowTime()
+                }
                 when {
                     it <= 0 -> {
                         timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.FINISHED)

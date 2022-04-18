@@ -151,8 +151,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="52dp"
             android:thumb="@drawable/custom_thumb"
-            app:track="@drawable/custom_track"
-            android:enabled="false"/>
+            app:track="@drawable/custom_track"/>
 
         <TextView
             android:id="@+id/theme_header"
