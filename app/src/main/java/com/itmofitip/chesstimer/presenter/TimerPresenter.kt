@@ -1,11 +1,10 @@
 package com.itmofitip.chesstimer.presenter
 
-import android.media.MediaPlayer
-import com.itmofitip.chesstimer.R
 import com.itmofitip.chesstimer.repository.PauseState
 import com.itmofitip.chesstimer.repository.TimeQuantityState
 import com.itmofitip.chesstimer.repository.Turn
 import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
+import com.itmofitip.chesstimer.utilities.SoundRouter
 import com.itmofitip.chesstimer.utilities.getNormalizedMs
 import com.itmofitip.chesstimer.utilities.getNormalizedTime
 import com.itmofitip.chesstimer.view.TimerView
@@ -40,13 +39,15 @@ class TimerPresenter(private val view: TimerView) {
     private val movesCountRepository = APP_ACTIVITY.movesCountRepository
     private val timeQuantityRepository = APP_ACTIVITY.timeQuantityRepository
     private val settingsSwitchesRepository = APP_ACTIVITY.settingsSwitchesRepository
+    private val soundWasPlayedRepository = APP_ACTIVITY.soundWasPlayedRepository
+
+    private val soundRouter = SoundRouter()
+
     private var firstJob: Job? = null
     private var secondJob: Job? = null
     private var turnForInactiveJob: Job? = null
 
     private val activeJobs = mutableListOf<Job>()
-
-    var soundOnFinishWasPlayed = APP_ACTIVITY.soundWasPlayedRepository.soundOnFinishWasPlayed
 
 
     fun attach() {
@@ -118,31 +119,19 @@ class TimerPresenter(private val view: TimerView) {
 
     private fun makeSoundClick() {
         if (settingsSwitchesRepository.isSoundOnClickChecked) {
-            val mp = MediaPlayer.create(APP_ACTIVITY, R.raw.timer_tap)
-            mp.setOnCompletionListener {
-                mp.release()
-            }
-            mp.start()
+            soundRouter.makeSoundClick()
         }
     }
 
     private fun makeSoundLowTime() {
         if (settingsSwitchesRepository.isSoundOnLowTimeChecked) {
-            val mp = MediaPlayer.create(APP_ACTIVITY, R.raw.low_time)
-            mp.setOnCompletionListener {
-                mp.release()
-            }
-            mp.start()
+            soundRouter.makeSoundLowTime()
         }
     }
 
     private fun makeSoundFinished() {
         if (settingsSwitchesRepository.isSoundOnFinishChecked) {
-            val mp = MediaPlayer.create(APP_ACTIVITY, R.raw.time_is_up)
-            mp.setOnCompletionListener {
-                mp.release()
-            }
-            mp.start()
+            soundRouter.makeSoundFinished()
         }
     }
 
@@ -171,9 +160,9 @@ class TimerPresenter(private val view: TimerView) {
                     it <= 0 -> {
                         timeQuantityRepository.setFirstTimeQuantityState(TimeQuantityState.FINISHED)
                         view.setFirstMs(":000")
-                        if (!soundOnFinishWasPlayed) {
+                        if (!soundWasPlayedRepository.soundOnFinishWasPlayed) {
                             makeSoundFinished()
-                            soundOnFinishWasPlayed = true
+                            soundWasPlayedRepository.soundOnFinishWasPlayed = true
                         }
                     }
                     it < NEED_MS_TIME_MILLIS -> {
@@ -197,9 +186,9 @@ class TimerPresenter(private val view: TimerView) {
                     it <= 0 -> {
                         timeQuantityRepository.setSecondTimeQuantityState(TimeQuantityState.FINISHED)
                         view.setSecondMs(":000")
-                        if (!soundOnFinishWasPlayed) {
+                        if (!soundWasPlayedRepository.soundOnFinishWasPlayed) {
                             makeSoundFinished()
-                            soundOnFinishWasPlayed = true
+                            soundWasPlayedRepository.soundOnFinishWasPlayed = true
                         }
                     }
                     it < NEED_MS_TIME_MILLIS -> {
@@ -294,6 +283,7 @@ class TimerPresenter(private val view: TimerView) {
                     PauseState.NOT_STARTED -> {
                         timeRepository.resetTime()
                         movesCountRepository.reset()
+                        soundWasPlayedRepository.reset()
                         firstJob?.cancel()
                         secondJob?.cancel()
                         turnForInactiveJob?.cancel()
@@ -307,7 +297,6 @@ class TimerPresenter(private val view: TimerView) {
         })
     }
 
-    @ExperimentalCoroutinesApi
     private fun observeTime() {
         firstJob = CoroutineScope(Dispatchers.Main).launch {
             getFirstTimeFlow().collect { time ->
@@ -325,7 +314,6 @@ class TimerPresenter(private val view: TimerView) {
         }
     }
 
-    @ExperimentalCoroutinesApi
     private fun getFirstTimeFlow(): Flow<String> {
         return turnRepository.turn.flatMapLatest { turn ->
             when (turn) {
@@ -344,7 +332,6 @@ class TimerPresenter(private val view: TimerView) {
         }
     }
 
-    @ExperimentalCoroutinesApi
     private fun getSecondTimeFlow(): Flow<String> {
         return turnRepository.turn.flatMapLatest { turn ->
             when (turn) {
