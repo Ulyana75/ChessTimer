@@ -1,7 +1,6 @@
 package com.itmofitip.chesstimer
 
 import android.os.Bundle
-import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.widget.NestedScrollView

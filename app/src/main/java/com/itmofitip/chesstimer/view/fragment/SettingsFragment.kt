@@ -35,7 +35,6 @@ class SettingsFragment : Fragment(), SettingsView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_settings, container, false)
         view.findViewById<NestedScrollView>(R.id.scroll_view)?.fullScroll(ScrollView.FOCUS_UP)
         return view

@@ -3,31 +3,10 @@ package com.itmofitip.chesstimer.presenter
 import com.itmofitip.chesstimer.repository.PauseState
 import com.itmofitip.chesstimer.repository.TimeQuantityState
 import com.itmofitip.chesstimer.repository.Turn
-import com.itmofitip.chesstimer.utilities.APP_ACTIVITY
-import com.itmofitip.chesstimer.utilities.SoundRouter
-import com.itmofitip.chesstimer.utilities.getNormalizedMs
-import com.itmofitip.chesstimer.utilities.getNormalizedTime
+import com.itmofitip.chesstimer.utilities.*
 import com.itmofitip.chesstimer.view.TimerView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
-
-val FEW_TIME_MILLIS = TimeUnit.SECONDS.toMillis(30)
-val NEED_MS_TIME_MILLIS = TimeUnit.SECONDS.toMillis(20)
-val SOUND_LOW_TIME_MILLIS = TimeUnit.SECONDS.toMillis(10)
-const val LONG_TIME_MINIMAL_LENGTH = 8
-const val MILLIS_DELAY = 20L
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -148,7 +127,6 @@ class TimerPresenter(private val view: TimerView) {
         turnForInactiveJob?.cancel()
     }
 
-    @FlowPreview
     private fun observeMillisLeft() {
         activeJobs.add(CoroutineScope(Dispatchers.Main).launch {
             timeRepository.firstMillisLeft.collect {

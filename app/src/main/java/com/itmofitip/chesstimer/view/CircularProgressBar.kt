@@ -15,17 +15,11 @@ import kotlin.math.roundToInt
 
 @SuppressLint("ViewConstructor")
 class CircularProgressBar(context: Context, attrs: AttributeSet) : View(context, attrs) {
-    /**
-     * ProgressBar's line thickness
-     */
     private var strokeWidth = 4f
     private var progress = 0f
     private var min = 0
     private var max = 100
 
-    /**
-     * Start the progress at 12 o'clock
-     */
     private val startAngle = -90f
     private var color: Int = Color.DKGRAY
     private var rectF: RectF = RectF()

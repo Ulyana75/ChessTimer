@@ -26,7 +26,6 @@ class AddTimeFragment : Fragment(), AddTimeView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_time, container, false)
         initPickers(view, savedInstanceState)
         return view

@@ -39,6 +39,7 @@ class TimeAdapter(
 
     fun getData(): List<TimeItem> = dataList
 
+
     class TimeItemHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val textView: TextView = view.findViewById(R.id.time_text)
